@@ -1,0 +1,4395 @@
+<div class="courses">
+<div class="sup_header">
+    <input class="icon"  type="text" placeholder="search" [(ngModel)]="itemSearch" (keyup)="search(itemSearch)">
+    <div class="list" *ngIf="showList">
+        <div *ngFor="let listactive of listActive ">
+            <button class="btn_his" (click)="recommendCourses(listactive.name)"><span><i class="fa-solid fa-clock-rotate-left"></i></span>    {{listactive.name}} </button>
+        </div>
+    </div>
+</div>
+<div class="courses_content">
+    <div class="card" *ngFor="let course of courses">
+        <div class="cover" style="background-image: url({{course.cover}});">
+
+
+        </div>
+        <div class="des_course">
+            <button (click)="goToDesc(course.id , course.category)">
+                <h2 class="name">{{course.courseName}}</h2>
+            </button>
+
+            <p class="constractor_name"> {{course.constractor}}</p>
+            <p class="des"> {{course.des}}</p>
+            <div class="rate">
+                <i class="fa-solid fa-star rat"></i> <span>{{course.rate}}</span>
+            </div>
+            <p class="hint">
+                Beginner · Professional Certificate · 3 - 6 Months
+            </p>
+
+        </div>
+    </div>
+
+
+    <div class="chat" *ngIf="chat">
+      <div id="header">
+        <h5>Chatbot</h5>
+        <button class="btn_send" (click)="closechat()">X</button>
+      </div>
+      <div class="chat-container" id="scrollableCard" >
+        <div *ngFor="let message of messages" [ngClass]="{'user-message': message.sender === 'user', 'bot-message': message.sender === 'bot'}">
+          {{ message.text }}
+        </div>
+      </div>
+      <input class="chat_input" [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Type your message...">
+      <button class="btn_send" (click)="sendMessage()">Send</button>
+    </div>
+<div class="btn_open_chat" *ngIf="!chat">
+  <button class="btn_send" (click)="chat=!chat">chatbot</button>
+</div>
+
+  </div>
+</div>
+.courses{
+    width: 90%;
+    margin: auto;
+}
+.courses_content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .card{
+        display: flex;
+        align-items: center;
+        position: relative;
+        width: 80%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 25px;
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 25px;
+            padding: 2px;
+            background: linear-gradient(
+              239deg,
+
+              #001f55,
+              #013367,
+              #046e9d,
+              #0585b2,
+              #0d99c3,
+              #1abadd,
+              #23d1f0,
+              #28dffb,
+              #2ae4ff
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box,
+              linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+          }
+          &:hover{
+            background: linear-gradient(
+                120deg,
+
+                #001f55,
+                #013367,
+                #046e9d,
+                #0585b2,
+                #0d99c3,
+                #1abadd,
+                #23d1f0,
+              );
+            color: #fff !important;
+
+                box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+                transform: translateY(-5px);
+
+            button{
+                color: #fff;
+            }
+          }
+        .cover{
+            width: 25%;
+            min-height: 200px;
+            max-height: 100%;
+            border-radius: 25px;
+            background-position: center;
+            background-size: cover;
+            margin-inline-end: 20px;
+        }
+        .des_course{
+            max-width: 50%;
+            text-transform: capitalize;
+            position: relative;
+            button{
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+            .name{
+
+            }
+            .constractor_name{
+                font-size: 18px;
+                font-weight: 600;
+            }
+            .des{
+                font-size: 16px;
+                max-height: 92px;
+                overflow: hidden;
+            }
+            .rate{
+                .rat{
+                    color: #f5e50c;
+                    margin-inline-end: 5px;
+                }
+            }
+            .hint{
+                color: gray;
+                font-size: 16px;
+            }
+        }
+    }
+}
+.icon{
+    border-radius: 20px;
+    width: 80%;
+    height: 30px;
+    padding: 3px 25px;
+   // padding-left: 25px;
+    background: url("https://static.thenounproject.com/png/101791-200.png") no-repeat left;
+    background-size: 20px;
+    border: 1px solid gray;
+
+}
+.sup_header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
+.list{
+    padding: 3px 25px;
+    width: 80%;
+    background: #8080801a;
+    border-radius: 20px;
+    .btn_his{
+        cursor: pointer;
+        background: none !important;
+        border: none !important;
+        margin-bottom: 5px;
+        // width: 100%;
+    }
+}
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: #DCF8C6;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.bot-message {
+  align-self: flex-start;
+  background-color: #F1F0F0;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.chat_input {
+  margin-top: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 85%;
+  position: relative;
+}
+
+.btn_send {
+  border: none;
+  background: linear-gradient(120deg, #001f55, #013367, #046e9d, #0585b2, #0d99c3, #1abadd, #23d1f0);
+  color: white;
+  cursor: pointer;
+  height: 40px;
+  border-radius: 5px;
+  position: relative;
+
+}
+.chat-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  height: 300px;
+  overflow-y: scroll;
+  scroll-margin-top: 100%;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.user-message {
+  text-align: right;
+   background-color: #DCF8C6;
+  //background: linear-gradient(120deg, #001f55, #013367, #046e9d, #0585b2, #0d99c3, #1abadd, #23d1f0);
+
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+.bot-message {
+  text-align: left;
+ // background-color: #F1F0F0;
+ background: linear-gradient(120deg,  #013367, #046e9d, #0585b2, #0d99c3, #1abadd, #23d1f0);
+
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+.chat{
+  position: fixed;
+  width: 400px;
+  height: 400px;
+border-radius: 8px;
+padding: 5px;
+box-sizing: border-box;
+
+  right: 10px;
+  bottom: 50px;
+  z-index: 1000;
+  background: #fff;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    padding: 2px;
+    background: linear-gradient(
+      239deg,
+
+      #001f55,
+      #013367,
+      #046e9d,
+      #0585b2,
+      #0d99c3,
+      #1abadd,
+      #23d1f0,
+      #28dffb,
+      #2ae4ff
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+  }
+
+}
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 16px;
+  font-family: "Finger Paint", cursive;
+  padding: 5px;
+  text-align: center;
+  border-radius: 5px;
+  background: linear-gradient(120deg, #001f55, #013367, #046e9d, #0585b2, #0d99c3, #1abadd, #23d1f0);
+  button{
+    background: transparent;
+    cursor: pointer;
+height: auto;
+  }
+}
+.btn_open_chat{
+  position: fixed;
+  right: 10px;
+  bottom: 50px;
+} 
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { CoursesComponent } from './courses.component';
+
+describe('CoursesComponent', () => {
+  let component: CoursesComponent;
+  let fixture: ComponentFixture<CoursesComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [CoursesComponent]
+    });
+    fixture = TestBed.createComponent(CoursesComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CourseService } from '../_services/CourseService';
+import { ChatbotService } from '../_services/chat';
+
+@Component({
+  selector: 'app-courses',
+  templateUrl: './courses.component.html',
+  styleUrls: ['./courses.component.scss']
+})
+export class CoursesComponent implements OnInit {
+
+  messages: any[] = [];
+  context: any=  {};
+  userMessage: string = '';
+  error: string|null =null;
+courses:any[]=[];
+listActive:any[]=[];
+coursesName:any;
+itemSearch:any;
+showList:boolean=false
+chat:boolean=false
+list:any[]=
+[
+  {
+    id:1,
+    name:'mathematics',
+  },
+
+  {
+    id:3,
+    name:'English',
+  },
+  {
+    id:4,
+    name: 'Physics',
+  },
+  {
+    id:5,
+    name:'Biology',
+  },
+  {
+    id:6,
+    name:'Astronomy',
+  },
+  {
+    id:7,
+    name:'Data Structures',
+  },
+  {
+    id:8,
+    name: 'Algorithms',
+  },
+  {
+    id:9,
+    name: 'Artificial Intelligence',
+  },
+  {
+    id:10,
+    name: 'Economics',
+  },
+  {
+    id:11,
+    name:'Spanish',
+  },
+  {
+    id:12,
+    name:'Arabic',
+  },
+  {
+    id:13,
+    name:'French',
+  },
+  {
+    id:13,
+    name:'Calculus',
+  },
+  {
+    id:13,
+    name:'Speaking',
+  },
+  {
+    id:13,
+    name:'Composition',
+  },
+  {
+    id:13,
+    name:'Communication',
+  },
+  {
+    id:13,
+    name:'Skills',
+  },
+  {
+    id:13,
+    name:'Specialization',
+  },
+  {
+    id:13,
+    name:'Grammar',
+  },
+  {
+    id:13,
+    name:'Beginning',
+  },
+  {
+    id:13,
+    name:'Programming',
+  },
+  {
+    id:13,
+    name:'bacic',
+  },
+  {
+    id:13,
+    name:'Python',
+  },
+  {
+    id:13,
+    name:'Introduction',
+  },
+  {
+    id:13,
+    name:'advanced',
+  },
+  {
+    id:13,
+    name:'Object ',
+  },
+  {
+    id:13,
+    name:'Oriented',
+  },
+  {
+    id:13,
+    name:'انجليزي',
+  },
+  {
+    id:13,
+    name:'رياضيات',
+  },
+  {
+    id:13,
+    name:'بايثون',
+  },
+  {
+    id:13,
+    name:'برمجه',
+  },
+
+]
+// mathematics:any[]=
+// [
+//   {
+//     id: '1',
+//     cover: '../../assets/images/courses/math/1.jpg',
+//     courseName: 'Introduction to Mathematical Thinking',
+//     constractor: 'mohmed saad',
+//     des: `Learn how to think the way mathematicians do  a powerful cognitive process developed over thousands of years.
+
+//     Mathematical thinking is not the same as doing mathematics – at least not as mathematics is typically presented in our school system. School math typically focuses on learning procedures to solve highly stereotyped problems. Professional mathematicians think a certain way to solve real problems, problems that can arise from the everyday world, or from science, or from within mathematics itself. The key to success in school math is to learn to think inside-the-box. In contrast, a key feature of mathematical thinking is thinking outside-the-box – a valuable ability in today’s world. This course helps to develop that crucial way of thinking.`,
+//     rate: '4',
+//   },
+//   {
+//     id: '2',
+//     cover: '../../assets/images/courses/math/3.jpg',
+//     courseName: 'Introduction to Calculus',
+//     constractor: 'kareem mohmed',
+//     des: `The focus and themes of the Introduction to Calculus course address the most important foundations for applications of mathematics in science, engineering and commerce. The course emphasises the key ideas and historical motivation for calculus, while at the same time striking a balance between theory and application, leading to a mastery of key threshold concepts in foundational mathematics.`,
+//     rate: '4.9',
+//   },
+//   {
+//     id: '3',
+//     cover: '../../assets/images/courses/math/2.jpg',
+//     courseName: 'Calculus: Single Variable Part 1 - Functions',
+//     constractor: ' mohmed omar',
+//     des: `Calculus is one of the grandest achievements of human thought, explaining everything from planetary orbits to the optimal size of a city to the periodicity of a heartbeat. This brisk course covers the core ideas of single-variable Calculus with emphases on conceptual understanding and applications. The course is ideal for students beginning  .`,
+//     rate: '4.5',
+//   },
+//   {
+//     id: '4',
+//     cover: '../../assets/images/courses/math/maxresdefault.jpg',
+//     courseName: 'Pre-Calculus',
+//     constractor: ' sayed hassen',
+//     des: `A course designed to ease students into first-semester calculus courses for almost any undergraduate degree, with a particular emphasis on science and engineering.`,
+//     rate: '4.7',
+//   },
+// ]
+// English:any[]=
+// [
+//   {
+//     id: '1',
+//     cover: '../../assets/images/courses/english/1.png',
+//     courseName: 'Learn English: Beginning Grammar Specialization',
+//     constractor: 'khaled saad',
+//     des: `Learn in-demand skills from university and industry experts,
+//     Master a subject or tool with hands-on projects,
+//     Develop a deep understanding of key concepts`,
+//     rate: '4.2',
+//   },
+//   {
+//     id: '2',
+//     cover: '../../assets/images/courses/english/2.png',
+//     courseName: 'Training and Practicing in English Public Speaking',
+//     constractor: 'kareem ahmed',
+//     des: `Professor Zhang is Central South University’s top training coach in English speaking and interpreting contests and has engaged in teaching and research on English speaking and interpreting as well as competition training for more than ten years.`,
+//     rate: '4.8',
+//   },
+//   {
+//     id: '3',
+//     cover: '../../assets/images/courses/english/3.jpg',
+//     courseName: 'English Composition I',
+//     constractor: ' mohmed omar',
+//     des: `You will gain a foundation for college-level writing valuable for nearly any field. Students will learn how to read carefully, write effective arguments, understand the writing process, engage with others' ideas, cite accurately, and craft powerful prose.`,
+//     rate: '4.4',
+//   },
+//   {
+//     id: '4',
+//     cover: '../../assets/images/courses/english/4.png',
+//     courseName: 'Improve Your English Communication Skills Specialization',
+//     constractor: ' sayed hassen',
+//     des: `This Specialization helps you improve your professional communication in English for successful business interactions. Each course focuses on a particular area of communication in English:  writing emails, speaking at meetings and interviews, giving presentations, and networking online. Whether you want to communicate to potential employers, `,
+//     rate: '4.7',
+//   },
+// ]
+// programing:any[]=
+// [
+//   {
+//     id: '1',
+//     cover: '../../assets/images/courses/programing/1.jpg',
+//     courseName: 'Programming for Everybody (Getting Started with Python)',
+//     constractor: 'khaled saad',
+//     des: `This course aims to teach everyone the basics of programming computers using Python. We cover the basics of how one constructs a program from a series of simple instructions in Python.  The course has no pre-requisites and avoids all but the simplest mathematics. Anyone with moderate computer experience should be able to master the materials in this `,
+//     rate: '4.2',
+//   },
+//   {
+//     id: '2',
+//     cover: '../../assets/images/courses/programing/2.jpg',
+//     courseName: 'Introduction to Computer Programming',
+//     constractor: 'kareem ahmed',
+//     des: `This MOOC provides you with the foundational skill set required to write computer programs. If you are interested in learning how to write interactive, graphical programs from an introductory level in a real programming language, this is the course for you. You will begin by learning the basics of editing and running programs.`,
+//     rate: '4.8',
+//   },
+//   {
+//     id: '3',
+//     cover: '../../assets/images/courses/programing/3.jpg',
+//     courseName: 'Python 3 Programming Specialization',
+//     constractor: ' mohmed omar',
+//     des: `This specialization teaches the fundamentals of programming in Python 3. We will begin at the beginning, with variables, conditionals, and loops, and get to some intermediate material like keyword parameters, list comprehensions, lambda expressions, and class inheritance.`,
+//     rate: '4.4',
+//   },
+//   {
+//     id: '4',
+//     cover: '../../assets/images/courses/programing/4.jpg',
+//     courseName: 'Object Oriented Programming',
+//     constractor: ' sayed hassen',
+//     des: `In this 5-course specialisation, you will develop various C++ programming skills. Rather than building many small programs as you will in other courses, we have taken a different approach: you will create a single, extensive program through the five courses. The program will be a simplified cryptocurrency exchange platform. We will cover the`,
+//     rate: '4.7',
+//   },
+// ]
+allCourses:any[]=[
+  {
+    id: '1',
+    cover: '../../assets/images/courses/math/1.jpg',
+    courseName: 'Introduction to Mathematical Thinking',
+    constractor: 'mohmed saad',
+    des: `Learn how to think the way mathematicians do  a powerful cognitive process developed over thousands of years.
+
+    Mathematical thinking is not the same as doing mathematics – at least not as mathematics is typically presented in our school system. School math typically focuses on learning procedures to solve highly stereotyped problems. Professional mathematicians think a certain way to solve real problems, problems that can arise from the everyday world, or from science, or from within mathematics itself. The key to success in school math is to learn to think inside-the-box. In contrast, a key feature of mathematical thinking is thinking outside-the-box – a valuable ability in today’s world. This course helps to develop that crucial way of thinking.`,
+    rate: '4',
+    category:'mathematics'
+  },
+  {
+    id: '2',
+    cover: '../../assets/images/courses/math/3.jpg',
+    courseName: 'Introduction to Calculus',
+    constractor: 'kareem mohmed',
+    des: `The focus and themes of the Introduction to Calculus course address the most important foundations for applications of mathematics in science, engineering and commerce. The course emphasises the key ideas and historical motivation for calculus, while at the same time striking a balance between theory and application, leading to a mastery of key threshold concepts in foundational mathematics.`,
+    rate: '4.9',
+    category:'mathematics'
+  },
+  {
+    id: '1',
+    cover: '../../assets/images/courses/english/1.png',
+    courseName: 'Learn English: Beginning Grammar Specialization',
+    constractor: 'khaled saad',
+    des: `Learn in-demand skills from university and industry experts,
+    Master a subject or tool with hands-on projects,
+    Develop a deep understanding of key concepts`,
+    rate: '4.2',
+    category:'English'
+  },
+  {
+    id: '2',
+    cover: '../../assets/images/courses/english/2.png',
+    courseName: 'Training and Practicing in English Public Speaking',
+    constractor: 'kareem ahmed',
+    des: `Professor Zhang is Central South University’s top training coach in English speaking and interpreting contests and has engaged in teaching and research on English speaking and interpreting as well as competition training for more than ten years.`,
+    rate: '4.8',
+    category:'English'
+  },
+  {
+    id: '3',
+    cover: '../../assets/images/courses/english/3.jpg',
+    courseName: 'English Composition I',
+    constractor: ' mohmed omar',
+    des: `You will gain a foundation for college-level writing valuable for nearly any field. Students will learn how to read carefully, write effective arguments, understand the writing process, engage with others' ideas, cite accurately, and craft powerful prose.`,
+    rate: '4.4',
+    category:'English'
+  },
+  {
+    id: '4',
+    cover: '../../assets/images/courses/english/4.png',
+    courseName: 'Improve Your English Communication Skills Specialization',
+    constractor: ' sayed hassen',
+    des: `This Specialization helps you improve your professional communication in English for successful business interactions. Each course focuses on a particular area of communication in English:  writing emails, speaking at meetings and interviews, giving presentations, and networking online. Whether you want to communicate to potential employers, `,
+    rate: '4.7',
+    category:'English'
+  },
+  {
+    id: '1',
+    cover: '../../assets/images/courses/programing/1.jpg',
+    courseName: 'Programming for Everybody (Getting Started with Python)',
+    constractor: 'khaled saad',
+    des: `This course aims to teach everyone the basics of programming computers using Python. We cover the basics of how one constructs a program from a series of simple instructions in Python.  The course has no pre-requisites and avoids all but the simplest mathematics. Anyone with moderate computer experience should be able to master the materials in this `,
+    rate: '4.2',
+    category:'programing'
+  },
+  {
+    id: '2',
+    cover: '../../assets/images/courses/programing/2.jpg',
+    courseName: 'Introduction to Computer Programming',
+    constractor: 'kareem ahmed',
+    des: `This MOOC provides you with the foundational skill set required to write computer programs. If you are interested in learning how to write interactive, graphical programs from an introductory level in a real programming language, this is the course for you. You will begin by learning the basics of editing and running programs.`,
+    rate: '4.8',
+    category:'programing'
+  },
+  {
+    id: '3',
+    cover: '../../assets/images/courses/programing/3.jpg',
+    courseName: 'Python 3 Programming Specialization',
+    constractor: ' mohmed omar',
+    des: `This specialization teaches the fundamentals of programming in Python 3. We will begin at the beginning, with variables, conditionals, and loops, and get to some intermediate material like keyword parameters, list comprehensions, lambda expressions, and class inheritance.`,
+    rate: '4.4',
+    category:'programing'
+  },
+  {
+    id: '4',
+    cover: '../../assets/images/courses/programing/4.jpg',
+    courseName: 'Object Oriented Programming',
+    constractor: ' sayed hassen',
+    des: `In this 5-course specialisation, you will develop various C++ programming skills. Rather than building many small programs as you will in other courses, we have taken a different approach: you will create a single, extensive program through the five courses. The program will be a simplified cryptocurrency exchange platform. We will cover the`,
+    rate: '4.7',
+    category:'programing'
+  },
+
+]
+constructor(
+  private _ActivatedRoute:ActivatedRoute,
+  private _Router:Router,
+  private _CourseService: CourseService,
+  private chatService: ChatbotService
+  ) { }
+ngOnInit() {
+  this.courses= this.allCourses
+}
+
+
+printTo(id:any){
+  console.log(id);
+
+}
+search(item:any){
+  if(item==''){
+    this.showList=false
+  }
+  this.listActive=[]
+  if(item!=''){
+  this.showList=true
+  console.log(item);
+  this.list.forEach((element:any) => {
+    if(element.name.toLowerCase().includes(item)){
+      this.listActive.push(element)
+
+    }else if(element.name.includes(item)){
+      this.listActive.push(element)
+    }else{
+
+    }
+  });
+}
+}
+goToDesc(id:any , category:any){
+
+
+  this._Router.navigate([`/course/${category}/description/${id}`]);
+}
+recommendCourses(item:any){
+  this.courses=[]
+  this._CourseService.recommendCourses(item).subscribe((res:any)=>{
+    if(res.courses.length<=0){
+      this._Router.navigate(['/soon']);
+
+    }else{
+      console.log(res);
+      this.showList=false
+      this.itemSearch=item
+      this.coursesName=item
+      this.courses= res.courses
+
+    }
+
+
+  })
+}
+
+sendMessage(): void {
+  if (this.userMessage.trim()) {
+    this.messages.push({ text: this.userMessage, sender: 'user' });
+    this.chatService.sendMessage(this.userMessage).subscribe(response => {
+      this.messages.push({ text: response.response, sender: 'bot' });
+    });
+    this.userMessage = '';
+  }
+}
+closechat(){
+  this.chat=false
+}
+
+}
+<div class="logedIn_page">
+    <h2>Login</h2>
+    <p class="error" *ngIf="faildLogin" > {{loginErrorMes}}</p>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">Username is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">Password is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button  class="btn btn-primary">
+            Login
+        </button>
+        <a routerLink="/register" class="btn btn-link">Register</a>
+    </div>
+</form>
+</div>
+.logedIn_page{
+    width: 80%;
+    margin: auto;
+    .error{
+        text-align: center;
+    font-size: 20px;
+    color: red;
+    }
+}
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { LoginComponent } from './login.component';
+
+describe('LoginComponent', () => {
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [LoginComponent]
+    });
+    fixture = TestBed.createComponent(LoginComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
+import { AuthenticationService } from '../_services/authentication.service';
+
+
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
+})
+export class LoginComponent implements OnInit {
+    faildLogin:boolean=false;
+    loginErrorMes:string='';
+    loginForm: any;
+    loading = false;
+    submitted = false;
+    returnUrl: any;
+
+    constructor(
+        private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
+        private router: Router,
+         private authenticationService: AuthenticationService,
+        // private alertService: AlertService
+    ) {
+        // redirect to home if already logged in
+        // if (this.authenticationService.currentUserValue) { 
+        //     this.router.navigate(['/']);
+        // }
+    }
+
+    ngOnInit() {
+        this.loginForm = this.formBuilder.group({
+            username: ['', Validators.required],
+            password: ['', Validators.required]
+        });
+
+        // get return url from route parameters or default to '/'
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    }
+
+    // convenience getter for easy access to form fields
+    get f() { return this.loginForm.controls; }
+
+    onSubmit() {
+        this.submitted = true;
+
+        // stop here if form is invalid
+        if (this.loginForm.invalid) {
+            return;
+        }
+
+        this.loading = true;
+        this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe({
+
+           next:(res:any)=>{
+            this.router.navigateByUrl('/')
+            
+        },
+    
+        error:(error:any)=>{
+            this.faildLogin=true;
+            this.loginErrorMes=error.error.message;
+            
+            
+         }
+     })
+            // .pipe(first())
+            // .subscribe(
+            //     data => {
+            //         this.router.navigate([this.returnUrl]);
+            //     },
+            //     error => {
+            //        // this.alertService.error(error);
+            //         this.loading = false;
+            //     });
+    }
+}
+<div class="register_page">
+    <h2>Register</h2>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" formControlName="first_name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" formControlName="last_name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+            <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">Username is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">Password is required</div>
+            <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Register
+        </button>
+        <a routerLink="/login" class="btn btn-link">Cancel</a>
+    </div>
+</form>
+</div>
+.register_page{
+    width: 80%;
+    margin: auto;
+}
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { RegisterComponent } from './register.component';
+
+describe('RegisterComponent', () => {
+  let component: RegisterComponent;
+  let fixture: ComponentFixture<RegisterComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [RegisterComponent]
+    });
+    fixture = TestBed.createComponent(RegisterComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
+
+
+import { AuthenticationService } from '../_services/authentication.service';
+import { UserService } from '../_services/user.service';
+
+@Component({
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
+})
+export class RegisterComponent {
+  registerForm: any;
+  loading = false;
+  submitted = false;
+
+  constructor(
+      private formBuilder: FormBuilder,
+      private router: Router,
+      private authenticationService: AuthenticationService,
+      private userService: UserService,
+  ) { 
+      // redirect to home if already logged in
+      // if (this.authenticationService.currentUserValue) { 
+      //     this.router.navigate(['/']);
+      // }
+  }
+
+  ngOnInit() {
+      this.registerForm = this.formBuilder.group({
+        first_name: ['', Validators.required],
+          last_name: ['', Validators.required],
+          email: ['', Validators.required],
+          password: ['', [Validators.required, Validators.minLength(6)]]
+      });
+  }
+
+  // convenience getter for easy access to form fields
+  get f() { return this.registerForm.controls; }
+
+  onSubmit() {
+      this.submitted = true;
+
+      // stop here if form is invalid
+      if (this.registerForm.invalid) {
+          return;
+      }
+
+      this.loading = true;
+      this.userService.register(this.registerForm.value)
+          .pipe(first())
+          .subscribe(
+              data => {
+                  //this.alertService.success('Registration successful', true);
+                  this.router.navigate(['/login']);
+              },
+              error => {
+                 // this.alertService.error(error);
+                  this.loading = false;
+              });
+  }
+}
+<div class="search"> 
+    <div class="title">
+            Academe courses
+    </div>
+    <input class="icon"  type="text" placeholder="search" [(ngModel)]="itemSearch" (keyup)="print(itemSearch)">
+    <div class="list" *ngIf="showList">
+        <div *ngFor="let listactive of listActive ">
+            <button class="btn_his" (click)="routeToList(listactive)"><span><i class="fa-solid fa-clock-rotate-left"></i></span>    {{listactive.name}} </button>
+        </div>
+    </div>
+</div>
+.search{
+    margin-top: 300px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .title{
+        font-size: 40px;
+        margin-bottom: 20px;
+        width: fit-content;
+        font-weight: 600;
+        background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    
+    }
+    input{
+        border-radius: 20px;
+        width: 40%;
+        height: 30px;
+        padding: 3px 25px;
+       // padding-left: 25px;
+        background: url("https://static.thenounproject.com/png/101791-200.png") no-repeat left;
+        background-size: 20px;
+        border: 1px solid gray;
+        
+    }
+    .list{
+        padding: 3px 25px;
+        width: 40%;
+        background: #8080801a;
+        border-radius: 20px;
+        .btn_his{
+            cursor: pointer;
+            background: none !important;
+            border: none !important;
+            margin-bottom: 5px;
+            // width: 100%;
+        }
+    }
+}
+P{
+    color: black;
+}
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SearchComponent } from './search.component';
+
+describe('SearchComponent', () => {
+  let component: SearchComponent;
+  let fixture: ComponentFixture<SearchComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [SearchComponent]
+    });
+    fixture = TestBed.createComponent(SearchComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { CourseService } from '../_services/CourseService';
+
+
+@Component({
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss']
+})
+export class SearchComponent implements OnInit {
+
+list:any[]=
+[
+  {
+    id:1,
+    name:'mathematics',
+  },
+  {
+    id:2,
+    name:'programing', 
+  },
+  {
+    id:3,
+    name:'English',
+  },
+  {
+    id:4,
+    name: 'Physics',
+  },
+  {
+    id:5,
+    name:'Biology', 
+  },
+  {
+    id:6,
+    name:'Astronomy',
+  },
+  {
+    id:7,
+    name:'Data Structures',
+  },
+  {
+    id:8,
+    name: 'Algorithms', 
+  },
+  {
+    id:9,
+    name: 'Artificial Intelligence',
+  },
+  {
+    id:10,
+    name: 'Economics',
+  },
+  {
+    id:11,
+    name:'Spanish', 
+  },
+  {
+    id:12,
+    name:'Arabic',
+  },
+  {
+    id:13,
+    name:'French',
+  },
+ 
+]
+listActive:any[]=[];
+itemSearch:any;
+showList:boolean=false
+constructor(
+   private _Router:Router,
+   private http: HttpClient,
+   private _CourseService: CourseService
+   ) { }
+  ngOnInit() {
+    //this.fetchData()
+    
+  }
+  fetchData(item:any) {
+    const query = 'speaking';
+    const apiUrl = `hhttp://localhost:5000?query=${item}`;
+
+    this.http.get(apiUrl).subscribe((data: any) => {
+      // Handle the response data here
+      console.log(data);
+    }, (error) => {
+      // Handle errors here
+      console.log('Error fetching data:', error);
+      
+    });
+  }
+  test(item:any){
+    this._CourseService.recommendCourses(item).subscribe((res:any)=>{
+      console.log(res);
+      
+    })
+  }
+  print(item:any){
+    if(item==''){
+      this.showList=false
+    }
+    this.listActive=[]
+    if(item!=''){
+    this.showList=true
+    console.log(item);
+    this.list.forEach((element:any) => { 
+      if(element.name.toLowerCase().includes(item)){  
+        this.listActive.push(element)
+        
+      }else if(element.name.includes(item)){
+        this.listActive.push(element)
+      }else{
+        
+      }
+    });
+  }
+  }
+  routeToList(course:any){
+    console.log(course);
+    
+    if(course.id == 1){
+      this._Router.navigate([`/courses/${course.name}`]);
+      
+    } else  if(course.id == 2){
+      this._Router.navigate([`/courses/${course.name}`]);
+      
+    } else  if(course.id == 3){
+      this._Router.navigate([`/courses/${course.name}`]);
+      
+    }
+    else{
+      this._Router.navigate(['/soon']);
+      
+    }
+    
+  }
+}
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { RelatedCoursesComponent } from './related-courses.component';
+
+describe('RelatedCoursesComponent', () => {
+  let component: RelatedCoursesComponent;
+  let fixture: ComponentFixture<RelatedCoursesComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [RelatedCoursesComponent]
+    });
+    fixture = TestBed.createComponent(RelatedCoursesComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+import { Component } from '@angular/core';
+
+//SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);;
+@Component({
+  selector: 'app-related-courses',
+  templateUrl: './related-courses.component.html',
+  styleUrls: ['./related-courses.component.scss']
+})
+export class RelatedCoursesComponent  {
+
+
+}
+<div class="singel_course">
+    <div class="cover" style="background-image: url({{booksProdectDetalis[0].coverPath}}); background-position: center; background-size: cover;height:80vh;">
+        <div class="cover_content">
+            <div class="auter_reviews">
+                <div class="">
+                    <!-- {{ coverInfo.productsName }} -->
+                    <h2 class="caver_title">{{ booksProdectDetalis[0].productsName }}</h2>
+                    <div class="name_imge_auther">
+                   
+                  <p class="auther_name">
+                    {{ booksProdectDetalis[0].instructor }}
+                   
+                  </p>
+                  <p class="all_rate"> 
+                    <i class="fa-solid fa-star rat"></i>
+                    <i class="fa-solid fa-star rat"></i>
+                    <i class="fa-solid fa-star rat"></i>
+                    <i class="fa-solid fa-star rat"></i>
+                    <i class="fa-solid fa-star rat"></i>
+                </p>
+                <div class="icon-section">
+                    <div class="course_icon">
+                      <span class="first_icon"
+                        ><i class="covere_social fa-solid fa-thumbs-up fa-xl"></i
+                      ></span>
+                      <span
+                        ><i class="covere_social fa-solid fa-share-nodes fa-xl"></i
+                      ></span>
+                      
+                        <span>
+                          <i class="covere_social fa-solid fa-bookmark fa-xl"></i
+                        ></span>
+                     
+        
+                      <span>
+                        <i class="covere_social fa-solid fa-list-ul fa-xl"></i
+                      ></span>
+                      <span
+                        ><i
+                          class="covere_social fa-solid fa-cart-shopping fa-flip-horizontal fa-xl"
+                        ></i
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+    
+                
+              </div>
+          
+        </div>
+       
+          
+    </div>
+    <div class="course_contnt">
+        <div class="right_sec">
+            <div class="des">
+                <div
+                class=" course_DESCRIPTION"
+                id="About"
+                *ngFor="let booksDescrption of booksProdectDetalis"
+              >
+              
+                <h2 class="course_review_title" >
+                  COURSE  DESCRIPTION
+                </h2>
+                <p class="dis_section">
+                  {{ booksDescrption.productsAbout }}
+                </p>
+                <div class="we_learn " >
+                  <div class="red_bottom_left"></div>
+                  <div class="we_learn_container ">
+                    <h2 class=" we_learn_title">
+                      WHAT WILL WE LEARN
+                  </h2>
+                    <div
+                      class="we_learn_description "
+                    >
+                      <div
+                        class="description_item "
+                        *ngFor="let objectives of booksDescrption.objectives"
+                      >
+                        <i class="fa-solid fa-check item_icon"></i>
+                        <p class="item_title">{{ objectives.Text1 }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <h2
+                  class=" course_review_title"
+                  
+                >
+                SKILLS YOU WILL GAIN
+                </h2>
+                <div class="objectives  tages_sectoin">
+                  <div class="tages_container"  *ngFor="let objectives of booksDescrption.skills">
+                    <p class="tages">{{objectives.Text1}}</p>
+                  </div>
+              
+                </div>
+                <!-- <h2
+                class=" course_review_title"
+                
+              >
+              COURSE VIDEOS LINK
+              </h2> -->
+              </div>
+
+
+            </div>
+            <div
+            class="instructor_container course_author"
+            
+            id="author"
+            *ngFor="let item of booksProdectDetalis[0].instructorInfo"
+          >
+            <div>
+              <h2 class="course_review_title" >
+                INSTRUCTOR
+              </h2>
+          
+              <div class="img_barent ">
+                <div class="img_container">
+          
+                  <img  class="author_img" *ngIf="item.profilePhoto else default_img" src="{{ item.profilePhoto }}" alt="" srcset="" />
+                  <ng-template #default_img>
+                    <img   class="author_img" src="../../../assets/images/img_defaults/course_list.png" alt="" srcset="" />
+          
+                  </ng-template>
+          
+                </div>
+          
+                <div class="icon_reating">
+                  <div>
+                    <h3 class="author_name">{{item.fName +" "+  item.lName}}</h3>
+                    <p class="author_Position">{{item.about}}</p>
+                  </div>
+                  <div class=" auth ">
+                    <div class=" autour_icons autour_icon" >
+                      <p>
+                        <span>
+                          <i class="ico fa-solid fa-video"></i>
+                          <!-- <i class="pi pi-video"></i> -->
+                        </span>
+                        {{item.courses}} Courses
+                      </p>
+                      <p>
+                        <span>
+                          <!-- <i class="pi-star pi"></i>  -->
+                          <i class="ico fa-regular fa-star"></i></span>
+                          {{item.rate}}Rateing
+                      </p>
+          
+                      <p>
+                        <span>
+                          <!-- <i class="pi pi-users"></i>  -->
+                          <i class="ico fa-solid fa-user-group"></i>
+                          </span
+                        >{{item.students}}
+                      </p>
+                    </div>
+                  </div>
+                  <!-- <div class="view_more_container">
+                    <button rou  class="verify_btn" routerLink="/pages/instructor/profile/{{item.id}}" >view more</button>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <!-- <div class="view_more_container">
+              <button class="verify_btn">view more</button>
+            </div> -->
+          </div>
+            <div class="related">
+              <h2 class="title">
+                Related Content
+              </h2>
+            <div class="related_container">
+              <div class="card" *ngFor="let course of coursesRelated">
+                <div class="cover" style="background-image: url({{course.cover}});">
+                   
+             
+                </div>
+                <div class="des_course">
+                    <button (click)="goToDesc(course.id)">
+                        <h2 class="name">{{course.courseName}}</h2>
+                    </button>
+                    
+                    <p class="constractor_name"> {{course.constractor}}</p>
+                    <p class="des"> {{course.des}}</p>
+                    <div class="rate">
+                        <i class="fa-solid fa-star rat"></i> <span>{{course.rate}}</span>
+                    </div>
+                    <p class="hint">
+                        Beginner · Professional Certificate · 3 - 6 Months
+                    </p>
+        
+                </div>
+            </div>
+            </div>
+            
+            </div>
+        </div>
+        <div class="left_sec">
+            <div class="right_side_part">
+                <!-- Start Buuton  -->
+                <div class="btn_start_course  ">
+                  <button
+                  (click)="routeToCourse(booksProdectDetalis[0].link)"
+                    class=" sm_response  btn_course"
+                  >
+                    <div class="  inner_btn">
+                      <div class="circle ">
+                        <div class="arrow_right"></div>
+                      </div>
+                      <div class="cont " >
+                        start coures
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              
+                <!-- End Start Buuton  -->
+                <div
+                  class="w-11 episodes_response episodes_course"
+                  
+                  *ngFor="let item of booksProdectDetalis"
+                >
+                  <div class="episodes_overlay ">
+                    <div class="episode_row ">
+                      <div class="right flex">
+                        <p>course level</p>
+                      </div>
+                      <p class="result">{{ item.levelName }}</p>
+                    </div>
+                    <div class="episode_row ">
+                      <div class="right flex">
+                        <p>course duration</p>
+                      </div>
+                      <p class="result">{{ item.duration }}</p>
+                    </div>
+                    <div class="episode_row ">
+                      <div class="right flex">
+                        <p>lectures</p>
+                      </div>
+                      <p class="result">{{ item.videoCount }}</p>
+                    </div>
+                    <div class="episode_row ">
+                      <div class="right flex">
+                        <p>quizes</p>
+                      </div>
+                      <p class="result">{{ item.totalQuizes }}</p>
+                    </div>
+                    <div class="episode_row ">
+                      <div class="right flex">
+                        <p>etc</p>
+                      </div>
+                      <p class="result">{{ item.expectedTimeCompletion }}</p>
+                    </div>
+                    <div class="episode_row ">
+                      <div class="right flex">
+                        <p>passing</p>
+                      </div>
+                      <p class="result">{{ item.level + '%' }}</p>
+                    </div>
+                  </div>
+                </div>
+                
+        
+              
+                <div class=" info_course " >
+                  <div class="info_overlay ">
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            %online
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+              
+                      <div class="content">
+                        <p class="inner_text">
+                            Learn anytime, anywhere.
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            Flexible Deadlines
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            Set your own learning schedule.
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            Self-Paced
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            Progress at your own speed.
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            Earn and share your certificates upon completion.
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            Arabic Language
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                    <div class="info_row">
+                      <img src="../../assets/images/courses/checkmark.png" class="circle">
+                      <div class="content">
+                        <p class="inner_text">
+                            with key English terminologies.
+                        </p>
+                        <!-- <p class="inner_text">Learn any time,any where.</p> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+        </div>
+
+    </div>
+    <div>
+        
+    </div>
+</div>
+.singel_course{
+    .cover_content{
+        display: flex;
+        align-items: end;
+        height: 100%;
+        justify-content: start;
+        background-color: #0000005b;
+        //flex-direction: column;
+     
+        .auter_reviews{
+            margin-bottom: 100px;
+            margin-inline-start: 40px;
+            .covere_social{
+                color: #ffffff;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50% , -50%);
+                
+              }
+              .caver_title{
+                color: #ffffff;
+                font-size: 40px;
+                font-weight: 600;
+              }
+              .auther_name{
+                color: #ffffff;
+                margin-inline-start: 1rem;
+                font-size: 35px;
+                font-weight: 700;
+                margin-bottom: 0;
+                padding-bottom: 0;
+                
+            }
+            .all_rate{
+                margin-inline-start: 1rem;
+            }
+            .rat{
+
+                color: #f5e50c;
+                font-size: 20px;
+                margin-inline-end: 5px;
+            }
+           
+            .course_icon {
+                span {
+                    display: inline-block;
+                  position: relative;
+                  width: 50PX !important;
+                  height: 50PX !important;
+                  border-radius: 50%;
+                  background-image: linear-gradient(
+                   50deg,
+                    #09009f, #00ff95 
+                  ) !important;
+                  margin-inline-start: 1rem;
+                  .covere_social{
+                    color: #ffffff;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50% , -50%);
+                    
+                  }
+                 
+                }
+              }
+        }
+        }
+        .course_contnt{
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+        }
+        .right_sec{
+            width: 70%;
+            .des{
+          
+                
+                  .course_DESCRIPTION {
+                    background: transparent 0% 0% no-repeat padding-box;
+                    box-shadow: 0px 0px 20px #040404;
+                   
+                    border-radius: 10px;
+                    opacity: 1;
+                    padding: 2rem;
+                    margin-inline-start: 2rem;
+                    margin-top: 3rem;
+                    .title_dis_section {
+                      color: #000;
+                      font-style: 2rem;
+                      font-weight: 800;
+                    }
+                    .dis_section {
+                      margin-top: 2rem;
+                      color: #000;
+                      font-style: 0.9rem;
+                    }
+                    .tages_sectoin {
+                      flex-wrap: wrap;
+                      align-items: start;
+                      .tages_container {
+                        background-image: linear-gradient(165deg,  #09009f 40%, #00ff95 100%) !important;
+
+                        border: 2px solid #00ff95;
+                        border-radius: 31px;
+                        opacity: 1;
+                        width: auto;
+                        color: #fff;
+                        text-align: center;
+                        padding:0rem  0.8rem;
+                        margin-top: 2rem;
+                        margin-inline-end: 1rem;
+                        .tages {
+                          display: inline-block;
+                        }
+                      }
+                    }
+                  }
+                  .we_learn{
+                    margin-top: 50px;
+                    padding: 10px;
+                    padding-bottom: 30px;
+                    border-radius: 50px;
+                    box-shadow: inset 0 0 10px #ffffff88 !important;
+                    .we_learn_container{
+                        width: 90%;
+                        margin: auto;
+                      .we_learn_title{
+                        width: fit-content;
+                         background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+                         -webkit-background-clip: text;
+                         -webkit-text-fill-color: transparent;
+                        font-size: 1.5rem;
+                      }
+                      .we_learn_description{
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: space-between;
+                        align-items: center;
+                        .description_item{
+                            display: flex;
+                            align-items: center;
+                            width: 50%;
+                          .item_icon{
+                            color: #09009f;
+                            font-weight: 900;
+                            margin-inline-end: 1.05rem;
+                            font-size: 1.3rem;
+                            
+                          }
+                          .item_title{
+                            color: #000;
+                          }
+                        }
+                      }
+                    }
+                  }
+                  .course_review_title{
+                    width: 50%;
+                    width: fit-content;
+                     background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+                     -webkit-background-clip: text;
+                     -webkit-text-fill-color: transparent;
+                  }
+                .objectives{
+                    display: flex;
+                    justify-content: start;
+                }
+                        }
+        }
+       
+       
+        .right_side_part {
+           padding: 20px 0;
+           margin: auto;
+           width: 100%;
+          .btn_books {
+            width: 65%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 50px;
+            padding: 2px;
+            border: none;
+            background-color: transparent;
+            .inner_btn {
+              padding: 5px;
+              border-radius: 50px;
+              position: relative;
+              z-index: 2;
+              background-color: #000;
+              background-image: linear-gradient(
+                135deg,
+                #1f1d1d 40%,
+                #00337263 55%,
+                #00ddffb0 100%
+              );
+              width: 100%;
+              .circle {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: #00ddffb0;
+                .arrow_right {
+                  width: 0;
+                  height: 0;
+                  border-top: 10px solid transparent;
+                  border-bottom: 10px solid transparent;
+                  border-left: 15px solid #fff;
+                  position: relative;
+                  left: 7%;
+                }
+              }
+            }
+            &::before {
+              content: "";
+              border-radius: 50%;
+              position: absolute;
+              width: 377%;
+              height: 573%;
+              left: -138%;
+              top: -235%;
+              background-image: conic-gradient(transparent, #00ddffb0, transparent 70%);
+              animation: rotate 3s infinite;
+              animation-timing-function: linear;
+            }
+          }
+          .btn_course {
+            width: 65%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 50px;
+            padding: 2px;
+            border: none;
+            margin-bottom: 5px;
+            background-color: transparent;
+            i {
+              font-style: normal;
+            }
+            .inner_btn {
+                display: flex;
+                align-items: center;
+              padding: 5px;
+              border-radius: 50px;
+              position: relative;
+              z-index: 2;
+              background-color: #000;
+              background-image: linear-gradient(
+                   50deg,
+                    #09009f, #00ff95 
+                  ) !important;
+              width: 100%;
+              .circle {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-image: linear-gradient(
+                   50deg,
+                    #09009f, #00ff95 
+                  ) !important;
+                .arrow_right {
+                  width: 0;
+                  height: 0;
+                  border-top: 10px solid transparent;
+                  border-bottom: 10px solid transparent;
+                  border-left: 15px solid #fff;
+                  position: relative;
+                  left: 7%;
+                }
+               
+              }
+              font-style: normal !important;
+            }
+            &::before {
+              content: "";
+              border-radius: 50%;
+              position: absolute;
+              width: 377%;
+              height: 573%;
+              left: -138%;
+              top: -235%;
+              background-image: linear-gradient(
+                   50deg,
+                    #09009f, #00ff95 
+                  ) !important;
+              animation: rotate 3s infinite;
+              animation-timing-function: linear;
+            }
+          }
+          .crrr{
+            display: flex;
+            align-items: center;
+          }
+          @keyframes rotate {
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+          .Schedule {
+            text-align: center;
+            width: 90%;
+            margin: auto;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            a {
+              text-decoration: underline;
+            }
+          }
+          .Schedule_books {
+            color: #00dfff !important;
+          }
+          .Schedule_course {
+            color: #ed306f !important;
+          }
+        
+          .episodes_course {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            box-shadow: inset 0px 0px 5px #6b6b6b;
+            color: hsl(0, 0%, 100%);
+            .episodes_overlay {
+                padding: 30px;
+              border-radius: 25px;
+              .episode_row {
+                display: flex;
+             justify-content: space-between;
+             align-items: center;   
+                border-bottom: 0.7px solid rgb(56, 56, 56);
+                padding: 15px 0px;
+                .right {
+                  .circle {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 10px;
+                    width: 30px;
+                    height: 30px;
+                    border: 2px solid #000;
+                    border-radius: 50%;
+                    i {
+                      padding-left: 1.8px;
+                    }
+                  }
+                  justify-content: center;
+                  align-items: center;
+                  p {
+                    width: fit-content;
+                     background: -webkit-linear-gradient(45deg, #09009f, #09009f 80%);
+                     -webkit-background-clip: text;
+                     -webkit-text-fill-color: transparent;
+                  }
+                  
+                }
+                .result{
+                    color: #00dfff;
+                  }
+              }
+            }
+          }
+          .episodes_books {
+            background-color: #000;
+            background-image: linear-gradient(
+              350deg,
+              #310b38b0,
+              #0b122db0,
+              #0c4751b0 80%
+            );
+            border-radius: 25px;
+            box-shadow: inset -1px -1px 10px #838383;
+            color: #000;
+            .episodes_overlay {
+              background: linear-gradient(173deg, transparent 83%, #6c6b6b6b);
+              border-radius: 25px;
+              .episode_row {
+                border-bottom: 0.7px solid rgb(56, 56, 56);
+                padding: 15px 0px;
+                .right {
+                  .circle {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 10px;
+                    width: 30px;
+                    height: 30px;
+                    border: 2px solid #000;
+                    border-radius: 50%;
+                    i {
+                      padding-left: 1.8px;
+                    }
+                  }
+                  justify-content: center;
+                  align-items: center;
+                  p {
+                    color: #00dfff;
+                  }
+                }
+              }
+            }
+          }
+          .book_cover {
+            img {
+              border: 1px solid #000;
+              box-shadow: 0px 0px 6px #000;
+              width: 80%;
+            }
+          }
+          .info_books {
+            background-color: #000;
+            background-image: linear-gradient(
+              350deg,
+              #310b388c,
+              #0b122da6,
+              #0c475188 80%
+            );
+            border-radius: 25px;
+            box-shadow: inset -1px -1px 10px #838383;
+            color: #000;
+            .info_overlay {
+              background: linear-gradient(175deg, transparent 90%, #6c6b6b54);
+              border-radius: 25px;
+        
+              .info_row {
+                padding: 15px 0px;
+                display: flex;
+                align-items: center;
+                .content {
+                  padding-inline-start: 1rem;
+                  max-width: 85%;
+                }
+              }
+              .circle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 15%;
+                height: 45px;
+                border: 2px solid #000;
+                background-color: #00bb00;
+                border-radius: 50%;
+                font-size: 1.3rem;
+                box-shadow: 2px 1px 5px #000;
+              }
+              .content {
+                .head {
+                  font-size: 1rem;
+                }
+                .inner_text {
+                  font-size: .8rem;
+                  color: #000;
+                }
+              }
+            }
+          }
+          .info_course {
+            background-color: rgba(255, 255, 255, 0.05);
+            margin-bottom: 50px;
+            border-radius: 25px;
+            box-shadow: inset 0px 0px 5px #6b6b6b;
+            color: #000;
+            .info_overlay {
+                padding: 10px;
+              border-radius: 25px;
+        
+              .info_row {
+                padding: 15px 0px;
+                display: flex;
+                align-items: center;
+                .content {
+                  padding-inline-start: 1rem;
+                  max-width: 85%;
+                }
+              }
+              .circle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border: 2px solid #fff;
+                background-color: #00bb00;
+                border-radius: 50%;
+                font-size: 1.3rem;
+                box-shadow: 2px 1px 5px #000;
+              }
+              .content {
+                .head {
+                  font-size: 1.25rem;
+                }
+                .inner_text {
+                  font-size: 1rem;
+                  color: #000;
+                }
+              }
+            }
+          }
+          .prerequisites {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            box-shadow: inset 0px 0px 5px #6b6b6b;
+            .prerequisites_overlay {
+              background: linear-gradient(343deg, transparent 80%, #6c6b6ba6);
+              border-radius: 25px;
+              padding: 2rem;
+          
+        
+              .prerequisites_row {
+               margin-bottom: 1.5rem;
+               display: flex;
+                .productName {
+                  font-size: 1em;
+                  color: #000;
+                  margin-inline-start: 2rem;
+        
+                }
+                .description_prod {
+                  margin-inline-start: 2rem;
+        
+                  color: #000;
+                  font-size: 0.8rem;
+                }
+              }
+            }
+          }
+        }
+        .btn_start_course {
+          text-align: center;
+        }
+        
+        .cont{
+            display: flex;
+            justify-content: center;
+            width: 80%;
+           font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        
+        ::ng-deep {
+          .p-dialog .p-dialog-content {
+            background: none;
+            color: none;
+            padding: none !important;
+          }
+          .p-dialog .p-dialog-header {
+            background: none;
+            color: transparent;
+          }
+          .p-dialog .p-dialog-header .p-dialog-header-icon {
+            color: #000 !important;
+            top: 63px;
+            z-index: 10;
+          }
+          .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+            background: none;
+          }
+          .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:focus {
+            box-shadow: none;
+          }
+        }
+        
+}
+
+.related{
+  margin-top: 100px;
+  width: 90%;
+  margin: auto;
+ 
+  .title{
+    width: fit-content;
+    // font-weight: 600;
+     background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+  }
+  .related_container{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .card{
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex-direction: column;
+    width: 30%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 25px;
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 25px;
+        padding: 2px;
+        background: linear-gradient(
+          239deg,
+    
+          #001f55,
+          #013367,
+          #046e9d,
+          #0585b2,
+          #0d99c3,
+          #1abadd,
+          #23d1f0,
+          #28dffb,
+          #2ae4ff
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+      }
+      &:hover{
+        background: linear-gradient(
+            120deg,
+      
+            #001f55,
+            #013367,
+            #046e9d,
+            #0585b2,
+            #0d99c3,
+            #1abadd,
+            #23d1f0,
+          );
+        color: #fff !important;
+   
+            box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+            transform: translateY(-5px);
+   
+        button{
+            color: #fff;
+        }
+      }
+    .cover{
+        width: 90%;
+        min-height: 200px;
+        max-height: 100%;
+        border-radius: 25px;
+        background-position: center;
+        background-size: cover;
+        margin-inline-end: 20px;
+    }
+    .des_course{
+        max-width: 90%;
+        text-transform: capitalize;
+        position: relative;
+        button{
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .name{
+
+        }
+        .constractor_name{
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .des{
+            font-size: 16px;
+            max-height: 92px;
+            overflow: hidden;
+        }
+        .rate{
+            .rat{
+                color: #f5e50c;
+                margin-inline-end: 5px;
+            }
+        }
+        .hint{
+            color: gray;
+            font-size: 16px;
+        }
+    }
+}
+}
+.instructor_container{
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+.author {
+  background: transparent 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0px 20px #040404;
+  background-color: #040404;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-inline-start: 2rem;
+  margin-top: 3rem;
+ 
+  .img_container {
+    border-radius: 100% !important;
+    height: 7.4rem;
+    width: 7.4rem;
+    padding: 0;
+    background-color: #00dfff;
+    border: 2px solid #00dfff;
+    position: relative;
+
+    .author_img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      top: 5%;
+    }
+  }
+
+  .author_name {
+    color: #000;
+    font-size: 1.5rem;
+    //font-family: $poppins_bold;
+    margin-inline-start: 2rem;
+  }
+  .author_Position {
+    margin-top: 1rem;
+    color: #000;
+    font-size: 1rem;
+    margin-inline-start: 2rem;
+  }
+  .autour_icons {
+    margin-top: 1rem !important;
+    span {
+
+      margin-inline-end: 0.9rem;
+    }
+    p {
+      color: #6d6b6b;
+      font-size: 1rem;
+      margin-inline-start: 2rem;
+    }
+  }
+
+  .view_more_container {
+    margin-top: 1rem;
+    margin-inline-start: 2rem;
+  
+    border-radius: 60%;
+    button {
+      border-radius: 5px;
+      position: relative;
+      color: #fff;
+      height: 2.5rem;
+      width: auto;
+      padding: 0px 10px !important;
+      border: none;
+      background-color: #070707;
+    }
+    button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 5px;
+      padding: 2px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+    }
+  }
+}
+.course_author {
+  background: transparent 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0px 20px #040404;
+  border-radius: 10px;
+  padding: 2rem;
+  padding-bottom: 3rem;
+  margin-inline-start: 2rem;
+  margin-top: 3rem;
+  .img_container {
+    border-radius: 100% !important;
+    height: 7.4rem;
+    width: 7.4rem;
+    padding: 0;
+   background-image: linear-gradient(
+                   50deg,
+                    #09009f, #00ff95 
+                  ) !important;
+    border: 2px solid #09009f;
+
+    .author_img {
+      width: 100%;
+      border-radius: 100%;
+      bottom: 0;
+    }
+  }
+
+  .author_name {
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 200;
+    margin-inline-start: 2rem;
+  }
+  .author_Position {
+    margin-top: 1rem;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 200;
+    margin-inline-start: 2.1rem;
+  }
+  .autour_icons {
+    margin-top: 1rem !important;
+    span {
+      margin-inline-end: 0.9rem;
+    }
+    p {
+      color: #6d6b6b;
+      font-size: 0.8rem;
+      margin-inline-start: 2rem;
+    }
+  }
+
+  .view_more_container {
+    margin-top: 1rem;
+    margin-inline-start: 2rem;
+    
+    
+    border-radius: 60%;
+    button {
+      border-radius: 5px;
+      position: relative;
+      color: #fff;
+      height: 2.5rem;
+      width: 7rem;
+
+      border: none;
+      background-color: #070707;
+    }
+    button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 5px;
+      padding: 2px;
+      background: linear-gradient(110deg, #ff0055, #3e0054, #003a81, #00dfff);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+    }
+  }
+}
+
+.course_review_title{
+  width: 50%;
+  width: fit-content;
+   background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+}
+ ::ng-deep{
+  .autour_icons{ 
+    display: flex;     
+  .pi{
+    color: #ED306F  ;
+  }
+  }
+  .autour_icon{      
+    .pi{
+      color: #00dfff !important ;
+    }
+    }
+}
+.img_barent{
+  display: flex;
+  align-items: center;
+}
+.auth{
+  display: flex;
+  justify-content: space-between;
+}
+.ico{
+  color: #00dfff;
+}
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SingelCourseComponent } from './singel-course.component';
+
+describe('SingelCourseComponent', () => {
+  let component: SingelCourseComponent;
+  let fixture: ComponentFixture<SingelCourseComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [SingelCourseComponent]
+    });
+    fixture = TestBed.createComponent(SingelCourseComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+mport { Component, OnInit } from '@angular/core';
+import { RelatedCoursesComponent } from '../shared/related-courses/related-courses.component';
+import { ActivatedRoute, Router } from '@angular/router';
+
+@Component({
+  selector: 'app-singel-course',
+  templateUrl: './singel-course.component.html',
+  styleUrls: ['./singel-course.component.scss']
+})
+export class SingelCourseComponent implements OnInit{
+    coursesRelated:any[]=[];
+coursesName:any;
+coursesId:any;
+    mathematics:any[]=
+[
+  {
+    id: '1',
+    cover: '../../assets/images/courses/math/1.jpg',
+    courseName: 'Introduction to Mathematical Thinking',
+    constractor: 'mohmed saad',
+    des: `Learn how to think the way mathematicians do  a powerful cognitive process developed over thousands of years.
+
+    Mathematical thinking is not the same as doing mathematics – at least not as mathematics is typically presented in our school system. School math typically focuses on learning procedures to solve highly stereotyped problems. Professional mathematicians think a certain way to solve real problems, problems that can arise from the everyday world, or from science, or from within mathematics itself. The key to success in school math is to learn to think inside-the-box. In contrast, a key feature of mathematical thinking is thinking outside-the-box – a valuable ability in today’s world. This course helps to develop that crucial way of thinking.`,
+    rate: '4',
+  },
+  {
+    id: '2',
+    cover: '../../assets/images/courses/math/3.jpg',
+    courseName: 'Introduction to Calculus',
+    constractor: 'kareem mohmed',
+    des: `The focus and themes of the Introduction to Calculus course address the most important foundations for applications of mathematics in science, engineering and commerce. The course emphasises the key ideas and historical motivation for calculus, while at the same time striking a balance between theory and application, leading to a mastery of key threshold concepts in foundational mathematics.`,
+    rate: '4.9',
+  },
+  {
+    id: '3',
+    cover: '../../assets/images/courses/math/2.jpg',
+    courseName: 'Calculus: Single Variable Part 1 - Functions',
+    constractor: ' mohmed omar',
+    des: `Calculus is one of the grandest achievements of human thought, explaining everything from planetary orbits to the optimal size of a city to the periodicity of a heartbeat. This brisk course covers the core ideas of single-variable Calculus with emphases on conceptual understanding and applications. The course is ideal for students beginning  .`,
+    rate: '4.5',
+  },
+  {
+    id: '4',
+    cover: '../../assets/images/courses/math/maxresdefault.jpg',
+    courseName: 'Pre-Calculus',
+    constractor: ' sayed hassen',
+    des: `A course designed to ease students into first-semester calculus courses for almost any undergraduate degree, with a particular emphasis on science and engineering.`,
+    rate: '4.7',
+  },
+]
+English:any[]=
+[
+  {
+    id: '1',
+    cover: '../../assets/images/courses/english/1.png',
+    courseName: 'Learn English: Beginning Grammar Specialization',
+    constractor: 'khaled saad',
+    des: `Learn in-demand skills from university and industry experts,
+    Master a subject or tool with hands-on projects,
+    Develop a deep understanding of key concepts`,
+    rate: '4.2',
+  },
+  {
+    id: '2',
+    cover: '../../assets/images/courses/english/2.png',
+    courseName: 'Training and Practicing in English Public Speaking',
+    constractor: 'kareem ahmed',
+    des: `Professor Zhang is Central South University’s top training coach in English speaking and interpreting contests and has engaged in teaching and research on English speaking and interpreting as well as competition training for more than ten years.`,
+    rate: '4.8',
+  },
+  {
+    id: '3',
+    cover: '../../assets/images/courses/english/3.jpg',
+    courseName: 'English Composition I',
+    constractor: ' mohmed omar',
+    des: `You will gain a foundation for college-level writing valuable for nearly any field. Students will learn how to read carefully, write effective arguments, understand the writing process, engage with others' ideas, cite accurately, and craft powerful prose.`,
+    rate: '4.4',
+  },
+  {
+    id: '4',
+    cover: '../../assets/images/courses/english/4.png',
+    courseName: 'Improve Your English Communication Skills Specialization',
+    constractor: ' sayed hassen',
+    des: `This Specialization helps you improve your professional communication in English for successful business interactions. Each course focuses on a particular area of communication in English:  writing emails, speaking at meetings and interviews, giving presentations, and networking online. Whether you want to communicate to potential employers, `,
+    rate: '4.7',
+  },
+]
+programing:any[]=
+[
+  {
+    id: '1',
+    cover: '../../assets/images/courses/programing/1.jpg',
+    courseName: 'Programming for Everybody (Getting Started with Python)',
+    constractor: 'khaled saad',
+    des: `This course aims to teach everyone the basics of programming computers using Python. We cover the basics of how one constructs a program from a series of simple instructions in Python.  The course has no pre-requisites and avoids all but the simplest mathematics. Anyone with moderate computer experience should be able to master the materials in this `,
+    rate: '4.2',
+  },
+  {
+    id: '2',
+    cover: '../../assets/images/courses/programing/2.jpg',
+    courseName: 'Introduction to Computer Programming',
+    constractor: 'kareem ahmed',
+    des: `This MOOC provides you with the foundational skill set required to write computer programs. If you are interested in learning how to write interactive, graphical programs from an introductory level in a real programming language, this is the course for you. You will begin by learning the basics of editing and running programs.`,
+    rate: '4.8',
+  },
+  {
+    id: '3',
+    cover: '../../assets/images/courses/programing/3.jpg',
+    courseName: 'Python 3 Programming Specialization',
+    constractor: ' mohmed omar',
+    des: `This specialization teaches the fundamentals of programming in Python 3. We will begin at the beginning, with variables, conditionals, and loops, and get to some intermediate material like keyword parameters, list comprehensions, lambda expressions, and class inheritance.`,
+    rate: '4.4',
+  },
+  {
+    id: '4',
+    cover: '../../assets/images/courses/programing/4.jpg',
+    courseName: 'Object Oriented Programming',
+    constractor: ' sayed hassen',
+    des: `In this 5-course specialisation, you will develop various C++ programming skills. Rather than building many small programs as you will in other courses, we have taken a different approach: you will create a single, extensive program through the five courses. The program will be a simplified cryptocurrency exchange platform. We will cover the`,
+    rate: '4.7',
+  },
+]
+    allCourses:any[]=[  
+        {
+            "English":[
+                {
+                    "id":1,
+                    "productsName": "Learn English: Beginning Grammar Specialization",
+                    "productsAbout": "This specialization is designed for individuals who are at the early stages of learning the English language and want to build a strong foundation in grammar. The course focuses on fundamental grammar concepts to help students communicate effectively in both spoken and written English. The curriculum is structured to provide a gradual progression from basic to more complex grammatical structures.",
+                    "levelName": "Basic",
+                    "level": "70",
+                    "instructor":"Khaled Saad",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/english/1.png',
+                    "duration": "00:51:02",
+                    "videoCount": 18,
+                    "expectedTimeCompletion": 3,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 2,
+                    "link":"https://www.coursera.org/specializations/learn-english-beginning-grammar?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Introduction to Parts of Speech."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Sentence Structure."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Tenses and Verb Conjugation."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Articles and Pronouns."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Basic Sentence Construction."
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Common Mistakes and Pitfalls."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Understanding Parts of Speech"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Sentence Structure"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Tense Usage"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Articles and Pronouns"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Common Grammar Pitfalls"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Listening Comprehension"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Reading Comprehension"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Khaled ",
+                            "lName": "Saad",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.0000,
+                            "courses": 2,
+                            "students": 18112077
+                        }
+                    ], 
+                },
+                {
+                    "id":2,
+                    "productsName": "Training and Practicing in English Public Speaking",
+                    "productsAbout": "This course is designed to enhance students' proficiency and confidence in English public speaking. Effective communication is a crucial skill in various professional and personal settings, and this course aims to provide students with the necessary tools and techniques to become articulate and persuasive speakers.",
+                    "levelName": "Basic",
+                    "level": "80",
+                    "instructor":"Kareem Ahmed",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/english/2.png',
+                    "duration": "00:41:02",
+                    "videoCount": 16,
+                    "expectedTimeCompletion": 4,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 4,
+                    "link":"https://www.coursera.org/learn/enpublicspeaking?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Speech Preparation and Organization"
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Audience Analysis"
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Delivery Techniques"
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Effective Use of Visual Aids"
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Overcoming Anxiety and Nervousness"
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Impromptu Speaking"
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Speech Preparation and Organization"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Audience Analysis:"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Delivery Techniques"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Effective Use of Visual Aids"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Overcoming Anxiety and Nervousness"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Impromptu Speaking"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Group Presentation Skills"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Critical Analysis of Speeches"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Adaptability"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Kareem ",
+                            "lName": "Ahmed",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.5,
+                            "courses": 6,
+                            "students": 181120
+                        }
+                    ], 
+                },
+                {
+                    "id":3,
+                    "productsName": "English Composition",
+                    "productsAbout": "The English Composition course is designed to enhance students' writing skills, fostering the development of effective written communication in various contexts. Through a combination of theory, analysis, and practical exercises, students will refine their ability to articulate ideas clearly, coherently, and persuasively. Emphasis will be placed on mastering the fundamentals of composition, critical thinking, and the revision process.",
+                    "levelName": "Basic",
+                    "level": "70",
+                    "instructor":"Mohmed Omar",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/english/3.jpg',
+                    "duration": "00:31:02",
+                    "videoCount": 22,
+                    "expectedTimeCompletion": 7,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 4,
+                    "link":"https://www.coursera.org/learn/english-composition?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Grammar and Syntax."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Paragraph and Essay Structure."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Thesis Development."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Research and Source Integration."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Revision and Editing."
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Genre Awareness:."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Technology and Writing"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Effective Communication of Ideas"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Mohmed  ",
+                            "lName": "Omar",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.7,
+                            "courses": 10,
+                            "students": 20112077
+                        }
+                    ], 
+                },
+                {
+                    "id":4,
+                    "productsName": "Improve Your English Communication Skills Specialization",
+                    "productsAbout": "The Improve Your English Communication Skills specialization is a comprehensive program designed to enhance proficiency in English language communication across various contexts. This specialization consists of a series of courses that address different aspects of language use, including speaking, listening, writing, and overall language fluency. Through a combination of theoretical knowledge, practical exercises, and real-world applications, participants will develop the skills needed to communicate confidently and effectively in both professional and personal settings.",
+                    "levelName": "Basic",
+                    "level": "50",
+                    "instructor":"Sayed Hassen",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/english/4.png',
+                    "duration": "00:31:02",
+                    "videoCount": 12,
+                    "expectedTimeCompletion": 1,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 2,
+                    "link":"https://www.coursera.org/specializations/improve-english?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Language Proficiency Improvement."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Effective Communication Skills."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Professional Communication Competence."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Cultural Competence."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Confidence Building."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Real-World Application"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Effective Use of Technology"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Confidence Building"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Public Speaking Confidence"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Cross-Cultural Communication"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Writing Proficiency"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Speaking Skills"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Sayed  ",
+                            "lName": "Hassen",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.9,
+                            "courses": 8,
+                            "students": 18112077
+                        }
+                    ], 
+                },
+            ],
+            "programing":[
+                {
+                    "id":1,
+                    "productsName": "Programming for Everybody (Getting Started with Python)",
+                    "productsAbout": "The Programming for Everybody course, also known as Getting Started with Python, is an introductory programming course designed for individuals with little or no prior programming experience. The course focuses on teaching the Python programming language as a tool for solving real-world problems and gaining essential programming skills. Through a combination of hands-on coding exercises, practical projects, and theoretical concepts, participants will acquire the foundational knowledge needed to start their journey into the world of programming",
+                    "levelName": "Basic",
+                    "level": "70",
+                    "instructor":"Khaled Saad",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/programing/1.jpg',
+                    "duration": "00:51:02",
+                    "videoCount": 18,
+                    "expectedTimeCompletion": 3,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 2,
+                    "link":'https://www.coursera.org/learn/python?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE',
+
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Introduction to Programming Concepts."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Python Language Basics."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Control Flow and Looping Structures."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Functions and Modular Programming."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Data Structures in Python:."
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Understanding and Using APIs."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Continuous Learning and Adaptability"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Debugging and Troubleshooting"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Problem-Solving Skills"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Data Analysis with Python"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "API Interaction"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "File Handling"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Data Structures in Python:"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Khaled ",
+                            "lName": "Saad",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.0000,
+                            "courses": 2,
+                            "students": 18112077
+                        }
+                    ], 
+                },
+                {
+                    "id":2,
+                    "productsName": "Introduction to Computer Programming",
+                    "productsAbout": "The Introduction to Computer Programming course is designed to provide participants with a comprehensive understanding of the fundamental principles and practices of computer programming. This course is tailored for individuals with little or no prior programming experience, aiming to instill a strong foundation in problem-solving, algorithmic thinking, and coding skills. Through a combination of theoretical concepts, hands-on programming exercises, and practical applications, participants will gain the essential knowledge to embark on their journey into the world of computer programming.",
+                    "levelName": "Basic",
+                    "level": "87",
+                    "instructor":"Kareem Ahmed",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/programing/2.jpg',
+                    "duration": "00:41:02",
+                    "videoCount": 20,
+                    "expectedTimeCompletion": 6,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 2,
+                    "link":"https://www.coursera.org/learn/introduction-to-computer-programming?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Foundations of Programming"
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Introduction to Programming Languages"
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Algorithmic Thinking"
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Programming Basics"
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Functions and Modular Programming"
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Data Structures"
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Software Development Life Cycle (SDLC)"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Version Control and Collaboration"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Ethical and Responsible Programming"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Effective Documentation"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Creative Problem-Solving"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Algorithmic Thinking and Problem-Solving"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Kareem ",
+                            "lName": "Ahmed",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.5,
+                            "courses": 6,
+                            "students": 181120
+                        }
+                    ], 
+                },
+                {
+                    "id":3,
+                    "productsName": "Python 3 Programming Specialization",
+                    "productsAbout": "Python 3 Programming Specialization course. Specializations often consist of multiple courses that together form a comprehensive program. However, I can provide a generic course description based on what a typical Python 3 Programming Specialization might include. Keep in mind that actual course content can vary, and it's recommended to check the specific course offering for the most accurate information.",
+                    "levelName": "Basic",
+                    "level": "70",
+                    "instructor":"Mohmed Omar",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/programing/3.jpg',
+                    "duration": "00:51:02",
+                    "videoCount": 32,
+                    "expectedTimeCompletion": 7,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 7,
+                    "link":"https://www.coursera.org/specializations/python-3-programming?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Python for Data Science."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Python for Web Development."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Machine Learning with Python."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Capstone Project."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Introduction to Python."
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Advanced Python Programming."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Continuous Learning and Adaptability"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Ethical Considerations in Programming"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Code Optimization and Best Practices"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Capstone Project"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Network and System Administration"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Data Structures and Algorithms"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Mohmed  ",
+                            "lName": "Omar",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.7,
+                            "courses": 10,
+                            "students": 20112077
+                        }
+                    ], 
+                },
+                {
+                    "id":4,
+                    "productsName": "Object Oriented Programming",
+                    "productsAbout": "The Object-Oriented Programming (OOP) course is designed to provide participants with a comprehensive understanding of the principles, concepts, and practices of object-oriented programming. This course introduces the paradigm of OOP and focuses on its application in software development. Through a combination of theoretical concepts, practical examples, and hands-on programming exercises, participants will gain the knowledge and skills required to design and implement object-oriented solutions to real-world problems.",
+                    "levelName": "Basic",
+                    "level": "60",
+                    "instructor":"Sayed Hassen",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/programing/4.jpg',
+                    "duration": "00:37:02",
+                    "videoCount": 10,
+                    "expectedTimeCompletion": 1,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 3,
+                    "link":"https://www.coursera.org/specializations/object-oriented-programming?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Introduction to OOP."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Classes and Objects."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Encapsulation."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Object-Oriented Analysis and Design (OOAD)."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Exception Handling."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Testing and Debugging OOP Code."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Real-world OOP Applications."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Application of OOP in Software Development."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Design Patterns"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Abstraction and Modeling"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Testing and Debugging OOP Code"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Real-world OOP Applications"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Problem-Solving and Critical Thinking"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Continuous Learning and Adaptability"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Understanding OOP Concepts"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Sayed  ",
+                            "lName": "Hassen",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.9,
+                            "courses": 8,
+                            "students": 18112077
+                        }
+                    ], 
+                },
+            ],
+            "mathematics":[
+                {
+                    "id":1,
+                    "productsName": "Introduction to Mathematical Thinking",
+                    "productsAbout": "The Introduction to Mathematical Thinking course is designed to cultivate a foundational understanding of mathematical reasoning and problem-solving skills. This course goes beyond rote memorization of formulas and procedures, focusing on developing the ability to think critically and abstractly about mathematical concepts. Through a combination of theoretical exploration and hands-on exercises, students will gain the essential skills needed for advanced mathematical study and real-world problem-solving.",
+                    "levelName": "Basic",
+                    "level": "70",
+                    "instructor":"Mohmed Saad",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/math/1.jpg',
+                    "duration": "00:31:02",
+                    "videoCount": 13,
+                    "expectedTimeCompletion": 1,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 3,
+                    "link":"https://www.coursera.org/learn/mathematical-thinking?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Foundations of Mathematical Reasoning."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Problem-Solving Techniques."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Abstract Thinking and Symbolic Representation."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Set Theory and Logic."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Proof Techniques."
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Logic and Propositional Calculus."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Continuous Learning"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Collaboration and Teamwork"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Communication of Mathematical Ideas"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Application of Mathematical Thinking"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Critical Analysis"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Algorithmic Thinking"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Proof Construction"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Mohmed ",
+                            "lName": "Saad",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.3,
+                            "courses": 5,
+                            "students": 28112077
+                        }
+                    ], 
+                },
+                {
+                    "id":2,
+                    "productsName": "Introduction to Calculus",
+                    "productsAbout": "The Introduction to Calculus course is designed to provide students with a fundamental understanding of the principles and applications of calculus. This foundational course explores the concepts of limits, derivatives, and integrals, offering students the tools to analyze and model various mathematical and real-world phenomena. Through a combination of theoretical lessons, problem-solving exercises, and practical applications, students will gain the necessary skills to comprehend and apply calculus in diverse academic and professional contexts.",
+                    "levelName": "Basic",
+                    "level": "90",
+                    "instructor":"Kareem Ahmed",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/math/3.jpg',
+                    "duration": "00:45:02",
+                    "videoCount": 18,
+                    "expectedTimeCompletion": 4,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 3,
+                    "link":"https://www.coursera.org/learn/introduction-to-calculus?utm_medium=sem&utm_source=gg&utm_campaign=B2C_EMEA__coursera_FTCOF_courseraplus&campaignid=20858197888&adgroupid=156245795749&device=c&keyword=coursera&matchtype=e&network=g&devicemodel=&adposition=&creativeid=684297719990&hide_mobile_promo=&term=%7Bterm%7D&gad_source=1&gclid=CjwKCAjwrvyxBhAbEiwAEg_KghYozjEK0kx39eGnQaPVD0iiGuUWB3vJUvrn8dS0N78cu4WxbaSJRxoCFrgQAvD_BwE",
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Limits and Continuity"
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Differentiation"
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Applications of Derivatives"
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "ntegration"
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Applications of Integrals"
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Techniques of Integration"
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Independent Learning"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "nterdisciplinary Awareness"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Critical Thinking and Problem Solving"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Mathematical Communication"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Applications of Derivatives"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Kareem ",
+                            "lName": "Ahmed",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.1,
+                            "courses": 3,
+                            "students": 11120
+                        }
+                    ], 
+                },
+                {
+                    "id":3,
+                    "productsName": "Calculus: Single Variable Part 1 - Functions",
+                    "productsAbout": "The Calculus: Single Variable Part 1 - Functions course serves as the introductory segment of a comprehensive calculus series. This course focuses on the foundational principles of calculus, emphasizing the concept of functions as the building blocks of mathematical analysis. Through a blend of theoretical exploration, problem-solving exercises, and practical applications, students will develop a deep understanding of functions and their role in calculus.",
+                    "levelName": "Basic",
+                    "level": "75",
+                    "instructor":"Mohmed Omar",
+                    "rate": null,
+                    "coverPath":  '../../assets/images/courses/math/2.jpg',
+                    "duration": "00:31:02",
+                    "videoCount": 22,
+                    "expectedTimeCompletion": 7,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 4,
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Foundations of Functions."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Limits and Continuity."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Rates of Change and Derivatives."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Applications of Derivatives."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Integration."
+                        },
+                        {
+                            "id": "E70E2AF4-B619-40CA-BF8C-333543CE8CB0",
+                            "Text1": "Applications of Integrals."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Independent Learning"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Real-World Applications"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Mathematical Communication"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Exponential and Logarithmic Functions"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Limits and Continuity"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Graphical Analysis"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Mohmed  ",
+                            "lName": "Omar",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.7,
+                            "courses": 10,
+                            "students": 20112077
+                        }
+                    ], 
+                },
+                {
+                    "id":4,
+                    "productsName": "Pre-Calculus",
+                    "productsAbout": "The Pre-Calculus course serves as a preparatory foundation for advanced mathematical concepts and calculus. This course is designed to review and reinforce essential mathematical topics, ensuring that students have a solid understanding of algebra, trigonometry, and other key concepts before delving into more advanced calculus coursework. Through a combination of theoretical lessons, practical applications, and problem-solving exercises, students will build the necessary skills to succeed in higher-level mathematics.",
+                    "levelName": "Basic",
+                    "level": "58",
+                    "instructor":"Sayed Hassen",
+                    "rate": null,
+                    "coverPath": '../../assets/images/courses/math/maxresdefault.jpg',
+                    "duration": "00:21:02",
+                    "videoCount": 2,
+                    "expectedTimeCompletion": 1,
+                    "createdIn": "2023-07-30T18:42:00",
+                    "totalQuizes": 3,
+                    "objectives": [
+                        {
+                            "id": "5DA95507-B2A7-4692-8CB5-6FC32F336C63",
+                            "Text1": "Algebraic Fundamentals."
+                        },
+                        {
+                            "id": "1DB4812A-4341-41CD-8412-828B723CAA56",
+                            "Text1": "Functions and Graphs."
+                        },
+                        {
+                            "id": "B175059B-EC5C-4E2F-B302-9D2F2F27AB87",
+                            "Text1": "Trigonometry Review."
+                        },
+                        {
+                            "id": "7669076B-9A82-4642-8F3F-CC0AD4E697C5",
+                            "Text1": "Exponential and Logarithmic Functions."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Systems of Equations and Inequalities."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Matrices and Determinants."
+                        },
+                        {
+                            "id": "3AB01AC0-B2E9-4065-8C02-AB9550C2B142",
+                            "Text1": "Polar Coordinates and Complex Numbers."
+                        }
+                    ],
+                    "skills": [
+                        {
+                            "id": "00A7E42D-5F58-41A6-B32E-2F380129DC6C",
+                            "Text1": "Independent Learning"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Communication of Mathematical Ideas"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Matrix and Determinant Mastery"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Analytic Geometry Skills"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Function Analysis"
+                        },
+                        {
+                            "id": "E24C3A27-8466-47DA-97FD-6AD49D244F83",
+                            "Text1": "Algebraic Proficiency"
+                        }
+                    ],
+                
+                    "instructorInfo": [
+                        {
+                            "id": "C26E3520-8209-47D4-9101-621C7D3A2412",
+                            "fName": "Sayed  ",
+                            "lName": "Hassen",
+                            "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/zedny-eg.appspot.com/o/UserProfile%2FAvatar.png?alt=media&token=e88247b1-2cdc-457d-826f-dd9c2b0aa5b6",
+                            "rate": 4.1,
+                            "courses": 6,
+                            "students": 19112077
+                        }
+                    ], 
+                },
+            ]
+        }
+        
+       
+]
+  booksProdectDetalis:any[]=[]
+constructor(
+    private _ActivatedRoute:ActivatedRoute,
+    private _Router:Router
+    
+    ) { }
+  ngOnInit(): void {
+      
+//   this.coursesName = this._ActivatedRoute.snapshot.paramMap.get('name');
+//   this.coursesId = this._ActivatedRoute.snapshot.paramMap.get('id');
+  console.log(this.coursesName);
+  this.coursesName = this._ActivatedRoute.snapshot.paramMap.get('name');
+  this.coursesId = this._ActivatedRoute.snapshot.paramMap.get('id');
+  this.allCourses.forEach((element:any) => {
+      const name =this.coursesName
+      console.log(name);
+      console.log(element.coursesName);
+      if(this.coursesName=="English"){
+          this.booksProdectDetalis=[]
+          element.English.forEach((eleme:any) => {
+              console.log(eleme.id);
+              if(eleme.id== this.coursesId){
+                  this.booksProdectDetalis.push(eleme)
+              }
+              
+            //this.coursesRelated.push(eleme)
+          });
+         }else  if(this.coursesName=="mathematics"){
+          this.booksProdectDetalis=[]
+          element.mathematics.forEach((eleme:any) => {
+              console.log(eleme.id);
+              if(eleme.id== this.coursesId){
+                  this.booksProdectDetalis.push(eleme)
+              }
+              
+            //this.coursesRelated.push(eleme)
+          });
+        }else  if(this.coursesName=="programing"){
+          this.booksProdectDetalis=[]
+          element.programing.forEach((eleme:any) => {
+              console.log(eleme.id);
+              if(eleme.id== this.coursesId){
+                  this.booksProdectDetalis.push(eleme)
+              }
+              
+            //this.coursesRelated.push(eleme)
+          });
+        }
+    });
+//   this.allCourses.forEach((element:any) => {
+//     const name =this.coursesName
+//     console.log(name);
+//     console.log(element.coursesName);
+//     if(this.coursesName=="English"){
+//         this.booksProdectDetalis=[]
+//         element.English.forEach((eleme:any) => {
+//             console.log(eleme.id);
+//             if(eleme.id== this.coursesId){
+//                 this.booksProdectDetalis.push(eleme)
+//             }
+            
+//           //this.coursesRelated.push(eleme)
+//         });
+//        }else  if(this.coursesName=="mathematics"){
+//         this.booksProdectDetalis=[]
+//         element.mathematics.forEach((eleme:any) => {
+//             console.log(eleme.id);
+//             if(eleme.id== this.coursesId){
+//                 this.booksProdectDetalis.push(eleme)
+//             }
+            
+//           //this.coursesRelated.push(eleme)
+//         });
+//       }else  if(this.coursesName=="programing"){
+//         this.booksProdectDetalis=[]
+//         element.programing.forEach((eleme:any) => {
+//             console.log(eleme.id);
+//             if(eleme.id== this.coursesId){
+//                 this.booksProdectDetalis.push(eleme)
+//             }
+            
+//           //this.coursesRelated.push(eleme)
+//         });
+//       }
+//   });
+    
+    
+
+  if(this.coursesName=="English"){
+   this.English.forEach((element:any) => {
+     this.coursesRelated.push(element)
+   });
+  }else  if(this.coursesName=="mathematics"){
+   this.mathematics.forEach((element:any) => {
+     this.coursesRelated.push(element)
+   });
+ }else  if(this.coursesName=="programing"){
+   this.programing.forEach((element:any) => {
+     this.coursesRelated.push(element)
+   });
+ }
+  }
+  GetdeacriptionCourse(){
+    // this.coursesName = this._ActivatedRoute.snapshot.paramMap.get('name');
+    // this.coursesId = this._ActivatedRoute.snapshot.paramMap.get('id');
+    this.allCourses.forEach((element:any) => {
+        const name =this.coursesName
+        console.log(name);
+        console.log(element.coursesName);
+        if(this.coursesName=="English"){
+            this.booksProdectDetalis=[]
+            element.English.forEach((eleme:any) => {
+                console.log(eleme.id);
+                if(eleme.id== this.coursesId){
+                    this.booksProdectDetalis.push(eleme)
+                }
+                
+              //this.coursesRelated.push(eleme)
+            });
+           }else  if(this.coursesName=="mathematics"){
+            this.booksProdectDetalis=[]
+            element.mathematics.forEach((eleme:any) => {
+                console.log(eleme.id);
+                if(eleme.id== this.coursesId){
+                    this.booksProdectDetalis.push(eleme)
+                }
+                
+              //this.coursesRelated.push(eleme)
+            });
+          }else  if(this.coursesName=="programing"){
+            this.booksProdectDetalis=[]
+            element.programing.forEach((eleme:any) => {
+                console.log(eleme.id);
+                if(eleme.id== this.coursesId){
+                    this.booksProdectDetalis.push(eleme)
+                }
+                
+              //this.coursesRelated.push(eleme)
+            });
+          }
+         
+      });
+      
+  }
+ 
+  goToDesc(id:any){
+    console.log(id);
+    
+    this._Router.navigate([`/course/${this.coursesName}/description/${id}`]);
+    this.coursesId=id
+    this.GetdeacriptionCourse();
+    
+}
+routeToCourse(link:string){
+    window.location.href = link;
+}
+
+}
+<div class="soon">
+
+</div>
+
+.soon{
+    width: 100%;
+    height: 100vh;
+    background-image: url(../../assets/images/soon/5060.jpg);
+    background-position: center;
+    background-size: cover;
+}
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SoonComponent } from './soon.component';
+
+describe('SoonComponent', () => {
+  let component: SoonComponent;
+  let fixture: ComponentFixture<SoonComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [SoonComponent]
+    });
+    fixture = TestBed.createComponent(SoonComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-soon',
+  templateUrl: './soon.component.html',
+  styleUrls: ['./soon.component.scss']
+})
+export class SoonComponent {
+
+}
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { SearchComponent } from './search/search.component';
+import { SoonComponent } from './soon/soon.component';
+import { CoursesComponent } from './courses/courses.component';
+import { SingelCourseComponent } from './singel-course/singel-course.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { AuthGuard } from './_services/auth.guard';
+
+const routes: Routes = [
+   { path: '', component: CoursesComponent ,canActivate:[AuthGuard]  },
+   { path: 'soon', component: SoonComponent ,canActivate:[AuthGuard] },
+   { path: 'courses', component: CoursesComponent ,canActivate:[AuthGuard] },
+   { path: 'course/:name/description/:id', component: SingelCourseComponent ,canActivate:[AuthGuard] },
+   { path: 'login', component: LoginComponent },
+   { path: 'register', component: RegisterComponent },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {
+  
+ }
+<div class="elearning">
+  <header>
+    <div class="header_container">
+      <div class="logo" (click)="goToHome()">
+        Academe courses
+      </div>
+      <div class="profaile" *ngIf="logedIn" >
+        <div class="btn_profaile_photo" (click)="togilProfaile()">
+        </div>
+        <div class="profaile_list" *ngIf="openProfaile">
+            <div class="info">
+              <p>{{email}} </p>
+              <p>{{first_name}} {{last_name}} </p>
+            </div>
+            <div class="action">
+              <p><i class="fa-solid fa-gear"></i> Setting</p>
+              <p  class="logout" (click)="logout()" ><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</p>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  
+  </header>
+  <div class="main_home">
+    <router-outlet></router-outlet>
+  </div>
+  
+</div>
+header{
+    //background-color: #00779f;
+    position: relative;
+}
+.header_container{
+
+    width: 90%;
+   // height: 50px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+ 
+    .logo{
+        cursor: pointer;
+        font-size: 30px;
+        width: fit-content;
+       // font-weight: 600;
+        background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    
+    }
+    .profaile{
+        .btn_profaile_photo{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-image: url("../assets/images/nav/Default_pfp.svg.png");
+            background-size: cover;
+            cursor: pointer;
+        }
+        .profaile_list{
+            position: absolute;
+            right: 0;
+            top: 70px;
+            width: 200px;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+            .info{
+                text-align: center;
+                border-bottom: 1px solid gray;
+            }
+            .action{
+                margin: 10px 0;
+                .logout{
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
+// .main_home{
+//     height: calc(100vh - 50px);
+// }
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [RouterTestingModule],
+    declarations: [AppComponent]
+  }));
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'elearning'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('elearning');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.content span')?.textContent).toContain('elearning app is running!');
+  });
+});
+import { Component, HostListener, OnInit } from '@angular/core';
+import { AuthenticationService } from './_services/authentication.service';
+import { Router, ActivatedRoute   } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent implements OnInit {
+  title = 'elearning';
+  first_name?:any;
+  last_name?:any;
+  email?:any;
+  logedIn:boolean=false
+  openProfaile:boolean=false;
+  constructor(
+    private _AuthenticationService:AuthenticationService,
+    private _Router:Router,
+    private _Route:ActivatedRoute,
+  ){
+
+  }
+  ngOnInit(): void {
+    if(localStorage.getItem('currentUser')){
+      this.logedIn=true
+    }else{
+      this.logedIn=false
+      
+    }
+    this.email=JSON.parse(localStorage.getItem('currentUser')!).emai
+    this.first_name=JSON.parse(localStorage.getItem('currentUser')!).first_name
+    this.last_name=JSON.parse(localStorage.getItem('currentUser')!).last_name
+
+    console.log(JSON.parse(localStorage.getItem('currentUser')!));
+    
+  }
+  togilProfaile(){
+    if(this.openProfaile==false){
+      this.openProfaile=true
+    }else{
+      this.openProfaile=false
+    }
+  }
+  goToHome(){
+    this._Router.navigateByUrl('/')
+  }
+  logout(){
+    this._AuthenticationService.logout()
+  }
+
+}
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { SearchComponent } from './search/search.component';
+import { ReactiveFormsModule , FormsModule} from '@angular/forms';
+import { SoonComponent } from './soon/soon.component';
+import { CoursesComponent } from './courses/courses.component';
+import { SingelCourseComponent } from './singel-course/singel-course.component';
+import { RelatedCoursesComponent } from './shared/related-courses/related-courses.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { HttpClientModule } from '@angular/common/http';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    SearchComponent,
+    SoonComponent,
+    CoursesComponent,
+    SingelCourseComponent,
+    RelatedCoursesComponent,
+    LoginComponent,
+    RegisterComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule
+ 
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+from flask import Flask, request, jsonify, session
+from flask_cors import CORS
+import sqlite3
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'
+CORS(app)
+
+def init_db():
+    conn = sqlite3.connect('cours.db')
+    c = conn.cursor()
+    c.execute('''
+              CREATE TABLE IF NOT EXISTS courses
+              (id INTEGER PRIMARY KEY,
+              course_name TEXT NOT NULL,
+              course_link TEXT NOT NULL,
+              course_level TEXT NOT NULL)
+              ''')
+    conn.commit()
+    conn.close()
+
+
+def seed_db():
+    conn = sqlite3.connect('cours.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM courses')  # Clear existing data for fresh seeding
+    c.executemany('''
+                  INSERT INTO courses (course_name, course_link, course_level)
+                  VALUES (?, ?, ?)
+                  ''', [
+                   ('Python Basics', 'https://www.coursera.org/learn/python', 'beginner'),
+                    ('Advanced Python', 'https://www.udemy.com/course/advanced-python/', 'advanced'),
+                    ('Data Science', 'https://www.edx.org/course/data-science', 'intermediate'),
+                    ('Introduction to Machine Learning', 'https://www.coursera.org/learn/machine-learning', 'beginner'),
+                    ('Deep Learning Specialization', 'https://www.coursera.org/specializations/deep-learning', 'advanced'),
+                    ('Web Development with Django', 'https://www.udemy.com/course/python-and-django-full-stack-web-developer-bootcamp/', 'intermediate'),
+                    ('JavaScript Essentials', 'https://www.coursera.org/learn/javascript', 'beginner'),
+                    ('React for Beginners', 'https://www.udemy.com/course/react-the-complete-guide-incl-redux/', 'beginner'),
+                    ('Full-Stack Web Development', 'https://www.coursera.org/specializations/full-stack-react', 'advanced'),
+                    ('DevOps Foundations', 'https://www.linkedin.com/learning/devops-foundations', 'intermediate'),
+                    ('Cloud Computing with AWS', 'https://www.coursera.org/specializations/aws-fundamentals', 'intermediate'),
+                    ('Cybersecurity Basics', 'https://www.coursera.org/learn/intro-cyber-security', 'beginner'),
+                    ('Kubernetes for Developers', 'https://www.udacity.com/course/scalable-microservices-with-kubernetes--ud615', 'advanced')
+                 
+                  ])
+    conn.commit()
+    conn.close()
+
+
+# @app.route('/chat', methods=['POST'])
+# def chat():
+#     user_message = request.json.get('message', '').lower()
+#     print(f"[DEBUG] User message: {user_message}")
+
+#     if 'asking_for_level' not in session:
+#         session['asking_for_level'] = False
+
+#     if 'course' in user_message:
+#         session['asking_for_course'] = True
+#         course_name = user_message.split('course', 1)[1].strip()
+#         print(f"[DEBUG] Asking for course: {course_name}")
+        
+#         conn = sqlite3.connect('cours.db')
+#         c = conn.cursor()
+#         c.execute("SELECT course_name, course_link FROM courses WHERE course_name LIKE ?", ('%' + course_name + '%',))
+#         courses = c.fetchall()
+#         conn.close()
+
+#         if courses:
+#             response_message = f"Here is the information about {course_name}:\n"
+#             for course in courses:
+#                 response_message += f"{course[0]}: {course[1]}\n"
+#         else:
+#             response_message = f"Sorry, I couldn't find any information about {course_name}."
+
+#         return jsonify({'response': response_message})
+
+#     # الأجزاء الأخرى من الشات لا تغير.
+#     common_responses = {
+#         'hello': 'Hi there! How can I help you today?',
+#         'hi': 'Hello! What can I assist you with?',
+#         'how are you': 'I am just a bot, but I am here to help you!'
+#     }
+
+#     for key in common_responses:
+#         if key in user_message:
+#             return jsonify({'response': common_responses[key]})
+
+#     return jsonify({'response': 'I am sorry, I do not understand your question. Can you please rephrase?'})
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_message = request.json.get('message', '').lower()
+    print(f"[DEBUG] User message: {user_message}")
+
+    if 'asking_for_level' not in session:
+        session['asking_for_level'] = False
+
+    if 'course' in user_message:
+        session['asking_for_course'] = True
+        course_name = user_message.split('course', 1)[1].strip()
+        print(f"[DEBUG] Asking for course: {course_name}")
+
+        conn = sqlite3.connect('cours.db')
+        c = conn.cursor()
+        c.execute("SELECT course_name, course_link, course_level FROM courses WHERE course_name LIKE ?", ('%' + course_name + '%',))
+        courses = c.fetchall()
+        conn.close()
+
+        if courses:
+            response_message = f"Here are the courses related to '{course_name}':\n"
+            for course in courses:
+                response_message += f"{course[0]} ({course[2]}): {course[1]}\n"
+        else:
+            response_message = f"Sorry, I couldn't find any information about '{course_name}'."
+
+        return jsonify({'response': response_message})
+    gratitude_responses = ['thank you', 'thanks', 'thank you very much', 'thanks a lot']
+    for gratitude in gratitude_responses:
+        if gratitude in user_message:
+            return jsonify({'response': 'You\'re welcome! If you have any other questions, feel free to ask.'})
+
+    # Common responses
+    # الأجزاء الأخرى من الشات لا تغير.
+    common_responses = {
+        'hello': 'Hi there! How can I help you today?',
+        'hi': 'Hello! What can I assist you with?',
+        'how are you': 'I am just a bot, but I am here to help you!'
+    }
+
+    for key in common_responses:
+        if key in user_message:
+            return jsonify({'response': common_responses[key]})
+
+    return jsonify({'response': 'I am sorry, I do not understand your question. Can you please rephrase?'})
+
+
+
+if __name__ == '__main__':
+    init_db()
+    seed_db()
+    app.run(debug=True, port=7000)
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import logging
+from googletrans import Translator
+import pyarabic.araby as araby
+
+
+# تكوين logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+# بيانات الكورسات
+courses_data = {
+    'id': [1, 2, 1 ,2 ,3,4,1,2,3,4],
+    'cover':['../../assets/images/courses/math/1.jpg',
+             '../../assets/images/courses/math/3.jpg',
+             '../../assets/images/courses/english/2.png',
+             '../../assets/images/courses/english/3.jpg',
+             '../../assets/images/courses/english/4.png',
+             '../../assets/images/courses/english/1.png',
+             '../../assets/images/courses/programing/1.jpg',
+             '../../assets/images/courses/programing/2.jpg',
+             '../../assets/images/courses/programing/3.jpg',
+             '../../assets/images/courses/programing/4.jpg',
+             ],
+    'courseName': [
+                    'Introduction to Mathematical Thinking',
+                    'Introduction to Calculus',
+                    'Training and Practicing in English Public Speaking',
+                    'English Composition I',
+                    'Improve Your English Communication Skills Specialization',
+                    'Learn English: Beginning Grammar Specialization',
+                    'Programming for Everybody (Getting Started with Python)',
+                    'Introduction to Computer Programming',
+                    'Python 3 Programming Specialization',
+                    'Object Oriented Programming',
+                      ],
+    'description': [
+                        'mathematics',
+                        'Calculus mathematics',
+                        'Speaking English ',
+                        'Composition English ',
+                        'Communication English Skills Specialization ',
+                        'Beginning  English  Grammar' ,
+                        'Programming bacic Python ',
+                        'Programming bacic Introduction ',
+                        'advanced Python Specialization Programming',
+                        'Programming advanced Object Oriented'
+                          ],
+    'constractor':[
+                         'mohmed saad',
+                         'kareem mohmed',
+                         'khaled saad',
+                         'kareem ahmed',
+                         'mohmed omar',
+                         'sayed hassen',
+                         'khaled saad',
+                         'kareem ahmed',
+                         'mohmed omar',
+                         'sayed hassen',
+    ],
+    'des':[
+                         'Learn how to think the way mathematicians do  a powerful cognitive process developed over thousands of years. Mathematical thinking is not the same as doing mathematics – at least not as mathematics is typically presented in our school system. School math typically focuses on learning procedures to solve highly stereotyped problems. Professional mathematicians think a certain way to solve real problems, problems that can arise from the everyday world, or from science, or from within mathematics itself. The key to success in school math is to learn to think inside-the-box. In contrast, a key feature of mathematical thinking is thinking outside-the-box – a valuable ability in today’s world. This course helps to develop that crucial way of thinking.',
+                         'The focus and themes of the Introduction to Calculus course address the most important foundations for applications of mathematics in science, engineering and commerce. The course emphasises the key ideas and historical motivation for calculus, while at the same time striking a balance between theory and application, leading to a mastery of key threshold concepts in foundational mathematics.',
+                         'Learn in-demand skills from university and industry experts, Master a subject or tool with hands-on projects,Develop a deep understanding of key concepts',
+                         'Professor Zhang is Central South University’s top training coach in English speaking and interpreting contests and has engaged in teaching and research on English speaking and interpreting as well as competition training for more than ten years.',
+                         'You will gain a foundation for college-level writing valuable for nearly any field. Students will learn how to read carefully, write effective arguments, understand the writing process, engage with others ideas, cite accurately, and craft powerful prose.',
+                         'This Specialization helps you improve your professional communication in English for successful business interactions. Each course focuses on a particular area of communication in English:  writing emails, speaking at meetings and interviews, giving presentations, and networking online. Whether you want to communicate to potential employers,',
+                         'This course aims to teach everyone the basics of programming computers using Python. We cover the basics of how one constructs a program from a series of simple instructions in Python.  The course has no pre-requisites and avoids all but the simplest mathematics. Anyone with moderate computer experience should be able to master the materials in this',
+                         'This MOOC provides you with the foundational skill set required to write computer programs. If you are interested in learning how to write interactive, graphical programs from an introductory level in a real programming language, this is the course for you. You will begin by learning the basics of editing and running programs.',
+                         'This specialization teaches the fundamentals of programming in Python 3. We will begin at the beginning, with variables, conditionals, and loops, and get to some intermediate material like keyword parameters, list comprehensions, lambda expressions, and class inheritance.',
+                         'In this 5-course specialisation, you will develop various C++ programming skills. Rather than building many small programs as you will in other courses, we have taken a different approach: you will create a single, extensive program through the five courses. The program will be a simplified cryptocurrency exchange platform. We will cover the',
+    ],
+    'rate':[
+                '4',
+                '4.9',
+                '4.2',
+                '4.8',
+                '4.4',
+                '4.7',
+                '4.2',
+                '4.8',
+                '4.4',
+                '4.7',
+
+            ],
+    'category':[
+                    'mathematics',
+                    'mathematics',
+                    'English',
+                    'English',
+                    'English',
+                    'English',
+                    'programing',
+                    'programing',
+                    'programing',
+                    'programing',
+    ]
+}
+courses_df = pd.DataFrame(courses_data)
+
+# تحويل النص إلى متجهات Tfidf
+# تحويل النص إلى متجهات Tfidf
+tfidf_vectorizer = TfidfVectorizer()
+tfidf_matrix = tfidf_vectorizer.fit_transform([desc.lower() for desc in courses_df['description']])
+
+# مسار الصفحة الرئيسية
+@app.route('/')
+def home():
+    return 'Welcome to the homepage!'
+
+# مسار توصيات الكورسات
+@app.route('/recommend', methods=['GET'])
+def recommend_courses():
+    user_input_arabic = request.args.get('query')
+    threshold_similarity = 0.1  # تحديد حد الشبه المطلوب
+    if user_input_arabic:
+        # تحويل النص إلى اللغة الإنجليزية
+       # تحويل النص من اللغة العربية إلى اللغة الإنجليزية
+        translator = Translator()
+        user_input_english = translator.translate(user_input_arabic, src='ar', dest='en').text
+
+        # تحويل مدخل المستخدم إلى حالة صغيرة
+        user_input_lower = user_input_english.lower()
+
+        # تحويل مدخل المستخدم إلى متجه Tfidf
+        query_vector = tfidf_vectorizer.transform([user_input_lower])
+
+        # حساب التشابه الكوسيني بين مدخل المستخدم ووصف الدورات
+        cosine_similarities = cosine_similarity(query_vector, tfidf_matrix) 
+
+        # تحديد الدورات ذات التشابه الكبير
+        relevant_courses_indices = cosine_similarities.argsort()[0][::-1]
+        relevant_courses_indices = relevant_courses_indices[cosine_similarities[0][relevant_courses_indices] > threshold_similarity]
+
+        # الحصول على الدورات المتعلقة
+        relevant_courses = courses_df.iloc[relevant_courses_indices]
+
+        # تحويل وصف الدورات إلى حالة صغيرة قبل البحث
+        relevant_courses['description_lower'] = relevant_courses['description'].apply(lambda x: x.lower())
+
+        # اختيار الدورات التي تحتوي على المدخل بالحالة الصغيرة أو الدقيقة
+        relevant_courses = relevant_courses[relevant_courses['description_lower'].str.contains(user_input_lower)]
+
+        # تحويل النتائج إلى قاموس
+        recommended_courses = relevant_courses.to_dict(orient='records')
+
+        return jsonify({'courses': recommended_courses})
+    else:
+        return 'Please provide a query parameter.'
+
+if __name__ == '__main__':
+    app.run(port=8000)
+
